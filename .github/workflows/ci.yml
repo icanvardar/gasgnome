@@ -1,0 +1,85 @@
+name: "CI"
+
+on: 
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - "main"
+
+env:
+  FOUNDRY_PROFILE: ci
+
+jobs:
+  lint:
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Soldeer Update
+        run: |
+          forge soldeer update
+
+      - name: Run Forge build
+        run: |
+          forge fmt --check
+        id: lint
+
+  build:
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Soldeer Update
+        run: |
+          forge soldeer update
+
+      - name: Run Forge build
+        run: |
+          forge --version
+          forge build --sizes
+        id: build
+
+  test:
+    strategy:
+      fail-fast: true
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Soldeer Update
+        run: |
+          forge soldeer update
+
+      - name: Run Forge tests
+        run: |
+          forge test -vvv
+        id: test
