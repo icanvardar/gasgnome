@@ -5,7 +5,6 @@ import { Broadcaster } from "./Broadcaster.s.sol";
 import { Environment } from "./Environment.s.sol";
 import { console2 } from "forge-std/console2.sol";
 
-import { Foo } from "../src/Foo.sol";
 import { WETH } from "@solady/tokens/WETH.sol";
 
 contract Deploy is Broadcaster, Environment {
@@ -14,7 +13,7 @@ contract Deploy is Broadcaster, Environment {
     function run() public broadcast returns (DeploymentResult memory) {
         DeploymentMode mode = getDeploymentMode();
 
-        result.foo = address(new Foo());
+        result.foo = address(1);
 
         if (mode == DeploymentMode.Test) {
             address mockWeth = address(new WETH());
