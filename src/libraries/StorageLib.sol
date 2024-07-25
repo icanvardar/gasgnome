@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import { Slot } from "./types/Slot.sol";
+import { Slot } from "../types/Slot.sol";
 
-library Storage {
+library StorageLib {
     function getSlot(address slot) public pure returns (Slot storage s) {
         assembly {
             s.slot := slot
