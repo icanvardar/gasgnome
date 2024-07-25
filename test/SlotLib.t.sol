@@ -6,32 +6,32 @@ import { Slot, SlotLib } from "../src/types/Slot.sol";
 import { Test, console } from "forge-std/Test.sol";
 
 struct MockSlots {
+    bytes32 longString;
+    bytes32 shortString;
     bytes32 boolean;
     bytes32 bytes32Example;
     bytes32 int256Example;
     bytes32 uint256Example;
-    bytes32 shortString;
-    bytes32 longString;
     bytes32 addr;
 }
 
 abstract contract StorageVariables {
+    string public longString = "abcabcabcabcabcabcabcabcabcabcabc";
+    string public shortString = "abc";
     bool public boolean = true;
     bytes32 public bytes32Example = "abc";
     int256 public int256Example = -1;
     uint256 public uint256Example = 1;
-    string public shortString = "abc";
-    string public longString = "abcabcabcabcabcabcabcabcabcabcabc";
     address public addr = address(1);
 
     function getMockSlots() public pure returns (MockSlots memory ms) {
         assembly {
-            mstore(ms, boolean.slot)
-            mstore(add(ms, 0x20), bytes32Example.slot)
-            mstore(add(ms, 0x40), int256Example.slot)
-            mstore(add(ms, 0x60), uint256Example.slot)
-            mstore(add(ms, 0x80), shortString.slot)
-            mstore(add(ms, 0xa0), longString.slot)
+            mstore(ms, longString.slot)
+            mstore(add(ms, 0x20), shortString.slot)
+            mstore(add(ms, 0x40), boolean.slot)
+            mstore(add(ms, 0x60), bytes32Example.slot)
+            mstore(add(ms, 0x80), int256Example.slot)
+            mstore(add(ms, 0xa0), uint256Example.slot)
             mstore(add(ms, 0xc0), addr.slot)
         }
     }
@@ -86,10 +86,24 @@ contract SlotLibTest is StorageVariables, Test {
         assertEq(result, expected);
     }
 
-    // function test_AsString_BiggerThen31Bytes() public view {
-    //     string memory result = Storage.getSlot(ms.longString).asString();
-    //     string memory expected = longString;
+    function test_AsString_BiggerThen31Bytes() public view {
+        string memory result = Storage.getSlot(ms.longString).asString();
+        string memory expected = longString;
 
-    //     assertEq(result, expected);
-    // }
+        assertEq(result, expected);
+    }
+
+    function test_AsBytes_LessThen32Bytes() public view {
+        bytes memory result = Storage.getSlot(ms.shortString).asBytes();
+        bytes memory expected = bytes(shortString);
+
+        assertEq(result, expected);
+    }
+
+    function test_AsBytes_BiggerThen31Bytes() public view {
+        bytes memory result = Storage.getSlot(ms.longString).asBytes();
+        bytes memory expected = bytes(longString);
+
+        assertEq(result, expected);
+    }
 }
