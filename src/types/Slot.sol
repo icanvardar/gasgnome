@@ -38,7 +38,7 @@ library SlotLib {
         }
     }
 
-    function asString(Slot storage s) internal view returns (string memory result) {
+    function asBytes(Slot storage s) internal view returns (bytes memory result) {
         assembly {
             let slot := s.slot
             let value := sload(slot)
@@ -52,8 +52,10 @@ library SlotLib {
                 mstore(0x40, add(result, and(add(add(0x20, length), 31), not(31))))
             }
 
-            if gt(length, 31) {
-                length := div(sub(rawLength, 1), 2)
+            if iszero(lt(length, 32)) {
+                // @dev This calculation is not needed because solidity rounds decimals.
+                // So that, length variable's first assigned value is OK!
+                // length := div(sub(rawLength, 1), 2)
                 result := mload(0x40)
                 mstore(result, length)
 
@@ -64,5 +66,9 @@ library SlotLib {
                 mstore(0x40, add(add(result, 0x20), length))
             }
         }
+    }
+
+    function asString(Slot storage s) internal view returns (string memory result) {
+        result = string(asBytes(s));
     }
 }
