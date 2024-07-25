@@ -10,7 +10,10 @@ using SlotLib for Slot global;
 library SlotLib {
     function asAddress(Slot storage s) internal view returns (address result) {
         assembly {
-            result := sload(s.slot)
+            let data := sload(s.slot)
+            let bytesToBeRemoved := sub(0x20, add(s.offset, 0x14))
+            let extractedRes := shl(mul(bytesToBeRemoved, 0x08), data)
+            result := shr(mul(0xc, 0x08), extractedRes)
         }
     }
 
