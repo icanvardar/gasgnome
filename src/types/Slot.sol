@@ -28,13 +28,19 @@ library SlotLib {
 
     function asInt256(Slot storage s) internal view returns (int256 result) {
         assembly {
-            result := sload(s.slot)
+            let data := sload(s.slot)
+            let bytesToBeRemoved := sub(0x20, add(s.offset, 0x01))
+            let extractedRes := shl(mul(bytesToBeRemoved, 0x08), data)
+            result := sar(mul(0x1f, 0x08), extractedRes)
         }
     }
 
     function asUint256(Slot storage s) internal view returns (uint256 result) {
         assembly {
-            result := sload(s.slot)
+            let data := sload(s.slot)
+            let bytesToBeRemoved := sub(0x20, add(s.offset, 0x01))
+            let extractedRes := shl(mul(bytesToBeRemoved, 0x08), data)
+            result := shr(mul(0x1f, 0x08), extractedRes)
         }
     }
 
