@@ -25,7 +25,8 @@ library BitmaskLib {
     }
 
     /// @dev Mask functions
-    function updateDataWith(Mask m, bytes32 slot, bytes32 data) public {
+    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data) public returns (uint256 length) {
+        length = data.length;
         assembly {
             function updateData(old, new, mask) -> res {
                 res := and(old, mask)
@@ -36,7 +37,7 @@ library BitmaskLib {
         }
     }
 
-    function updateDataWith(Mask m, bytes32 slot, bytes32 data, uint256 leftShiftLength) public {
+    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data, uint256 leftShiftLength) public {
         assembly {
             function updateData(old, new, mask, lsl) -> res {
                 res := and(old, mask)
@@ -47,28 +48,28 @@ library BitmaskLib {
         }
     }
 
-    function updateDataWith(Mask m, bytes32 slot, uint256 data) public {
-        updateDataWith(m, slot, bytes32(data));
+    function updateLeftPadded(Mask m, bytes32 slot, uint256 data) public {
+        updateLeftPadded(m, slot, bytes32(data));
     }
 
-    function updateDataWith(Mask m, bytes32 slot, uint256 data, uint256 leftShiftLength) public {
-        updateDataWith(m, slot, bytes32(data), leftShiftLength);
+    function updateLeftPadded(Mask m, bytes32 slot, uint256 data, uint256 leftShiftLength) public {
+        updateLeftPadded(m, slot, bytes32(data), leftShiftLength);
     }
 
-    function updateDataWith(Mask m, bytes32 slot, int256 data) public {
+    function updateLeftPadded(Mask m, bytes32 slot, int256 data) public {
         bytes32 tmp;
         assembly {
             tmp := data
         }
-        updateDataWith(m, slot, tmp);
+        updateLeftPadded(m, slot, tmp);
     }
 
-    function updateDataWith(Mask m, bytes32 slot, int256 data, uint256 leftShiftLength) public {
+    function updateLeftPadded(Mask m, bytes32 slot, int256 data, uint256 leftShiftLength) public {
         bytes32 tmp;
         assembly {
             tmp := data
         }
-        updateDataWith(m, slot, tmp, leftShiftLength);
+        updateLeftPadded(m, slot, tmp, leftShiftLength);
     }
 
     function toMask(bytes32 from) public pure returns (Mask to) {

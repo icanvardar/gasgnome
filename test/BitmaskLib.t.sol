@@ -58,7 +58,7 @@ contract BitmaskLibTest is Test {
         }
     }
 
-    function test_UpdateDataWith_ForUintN() public {
+    function test_UpdateLeftPadded_ForUintN() public {
         uint256 bAndCSlot = referenceSlot + 1;
         uint256 expected_b = 22;
         uint256 expected_c = 33;
@@ -66,8 +66,8 @@ contract BitmaskLibTest is Test {
         Mask m_b = BitmaskLib.generate(128);
         Mask m_c = BitmaskLib.generate(128, 128);
 
-        m_b.updateDataWith(bytes32(bAndCSlot), expected_b);
-        m_c.updateDataWith(bytes32(bAndCSlot), expected_c, 128);
+        m_b.updateLeftPadded(bytes32(bAndCSlot), expected_b);
+        m_c.updateLeftPadded(bytes32(bAndCSlot), expected_c, 128);
 
         assertEq(expected_b, b);
         assertEq(expected_c, c);
@@ -83,13 +83,13 @@ contract BitmaskLibTest is Test {
         Mask m_f = BitmaskLib.generate(32, 96); // 32 + 64 + 32
         Mask m_g = BitmaskLib.generate(128, 128); // 32 + 64 + 32 + 128
 
-        m_d.updateDataWith(bytes32(dEFGSlot), expected_d);
-        m_e.updateDataWith(bytes32(dEFGSlot), expected_e, 32);
-        m_f.updateDataWith(bytes32(dEFGSlot), expected_f, 96);
-        m_g.updateDataWith(bytes32(dEFGSlot), expected_g, 128);
+        m_d.updateLeftPadded(bytes32(dEFGSlot), expected_d);
+        m_e.updateLeftPadded(bytes32(dEFGSlot), expected_e, 32);
+        m_f.updateLeftPadded(bytes32(dEFGSlot), expected_f, 96);
+        m_g.updateLeftPadded(bytes32(dEFGSlot), expected_g, 128);
     }
 
-    function test_UpdateDataWith_ForIntN() public {
+    function test_UpdateLeftPadded_ForIntN() public {
         uint256 xAndYSlot = referenceSlot + 3;
         int256 expected_x = -11;
         int256 expected_y = -22;
@@ -97,8 +97,8 @@ contract BitmaskLibTest is Test {
         Mask m_x = BitmaskLib.generate(128);
         Mask m_y = BitmaskLib.generate(128, 128);
 
-        m_x.updateDataWith(bytes32(xAndYSlot), expected_x);
-        m_y.updateDataWith(bytes32(xAndYSlot), expected_y, 128);
+        m_x.updateLeftPadded(bytes32(xAndYSlot), expected_x);
+        m_y.updateLeftPadded(bytes32(xAndYSlot), expected_y, 128);
 
         assertEq(x, expected_x);
         assertEq(y, expected_y);
