@@ -10,21 +10,15 @@ struct Mask {
 using BitmaskLib for Mask global;
 
 library BitmaskLib {
-    function build(uint256 bits) public pure returns (Mask memory mask) {
+    function build(uint8 bits) public pure returns (Mask memory mask) {
         assembly {
             mstore(mask, not(sub(shl(bits, 1), 1)))
             mstore(add(mask, 0x20), bits)
         }
     }
 
-    function build(uint256 bits, uint256 leftShiftedBits) public pure returns (Mask memory mask) {
+    function build(uint8 bits, uint8 leftShiftedBits) public pure returns (Mask memory mask) {
         assembly {
-            /// bytes4(keccak256("WrongParameters()"))
-            if gt(leftShiftedBits, 0x100) {
-                mstore(0x80, 0xbd28cf5f)
-                revert(0x9c, 0x04)
-            }
-
             mstore(mask, not(shl(leftShiftedBits, sub(shl(bits, 1), 1))))
             mstore(add(mask, 0x20), bits)
             mstore(add(mask, 0x40), leftShiftedBits)
