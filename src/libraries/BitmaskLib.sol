@@ -25,8 +25,7 @@ library BitmaskLib {
     }
 
     /// @dev Mask functions
-    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data) public returns (uint256 length) {
-        length = data.length;
+    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data) public {
         assembly {
             function updateData(old, new, mask) -> res {
                 res := and(old, mask)
@@ -70,6 +69,50 @@ library BitmaskLib {
             tmp := data
         }
         updateLeftPadded(m, slot, tmp, leftShiftLength);
+    }
+
+    function updateRightPadded(Mask m, bytes32 slot, bytes32 data, uint256 maskLength) public {
+        assembly {
+            function updateData(old, new, mask) -> res {
+                res := and(old, mask)
+                res := or(res, new)
+            }
+
+            sstore(slot, updateData(sload(slot), shr(sub(0x100, maskLength), data), m))
+        }
+    }
+
+    function updateRightPadded(
+        Mask m,
+        bytes32 slot,
+        bytes32 data,
+        uint256 maskLength,
+        uint256 leftShiftLength
+    )
+        public
+    {
+        assembly {
+            function updateData(old, new, mask, lsl) -> res {
+                res := and(old, mask)
+                res := or(res, shl(lsl, new))
+            }
+
+            sstore(slot, updateData(sload(slot), shr(sub(0x100, maskLength), data), m, leftShiftLength))
+        }
+    }
+
+    function getLength(bytes32 v) public pure returns (uint8 len) {
+        assembly {
+            len := 32
+            for { } gt(len, 0) { } {
+                if iszero(byte(sub(len, 1), v)) {
+                    len := sub(len, 1)
+                    continue
+                }
+
+                break
+            }
+        }
     }
 
     function toMask(bytes32 from) public pure returns (Mask to) {

@@ -103,6 +103,22 @@ contract BitmaskLibTest is Test {
         assertEq(x, expected_x);
         assertEq(y, expected_y);
     }
+
+    function test_UpdateLeftPadded_ForBytesN() public {
+        uint256 jKAndLSlot = referenceSlot + 4;
+        bytes16 expected_j = "b";
+        bytes8 expected_k = "c";
+        bytes8 expected_l = "d";
+
+        Mask m_j = BitmaskLib.generate(128);
+        Mask m_k = BitmaskLib.generate(64, 128);
+        Mask m_l = BitmaskLib.generate(64, 192);
+
+        m_j.updateRightPadded(bytes32(jKAndLSlot), expected_j, 128);
+        m_k.updateRightPadded(bytes32(jKAndLSlot), expected_k, 128, 64);
+        m_l.updateRightPadded(bytes32(jKAndLSlot), expected_l, 192, 64);
+    }
+
     function test_RevertWhen_MaskLengthIsBigger_Generate() public {
         vm.expectRevert(bytes4(keccak256("WrongParameters()")));
         BitmaskLib.generate(128, 257);
