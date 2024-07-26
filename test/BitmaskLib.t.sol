@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import { BitmaskLib } from "../src/libraries/BitmaskLib.sol";
-import { Mask } from "../src/types/Mask.sol";
+import { BitmaskLib, Mask } from "../src/libraries/BitmaskLib.sol";
 import { Test, console } from "forge-std/Test.sol";
 
 contract BitmaskLibTest is Test {

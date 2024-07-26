@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import { Mask } from "../types/Mask.sol";
+type Mask is bytes32;
+
+using BitmaskLib for Mask global;
 
 library BitmaskLib {
     function generate(uint256 maskLength) public pure returns (Mask mask) {
