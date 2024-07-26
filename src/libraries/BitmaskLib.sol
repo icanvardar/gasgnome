@@ -61,18 +61,4 @@ library BitmaskLib {
             )
         }
     }
-
-    function getLength(bytes32 v) public pure returns (uint8 len) {
-        assembly {
-            len := 32
-            for { } gt(len, 0) { } {
-                if iszero(byte(sub(len, 1), v)) {
-                    len := sub(len, 1)
-                    continue
-                }
-
-                break
-            }
-        }
-    }
 }

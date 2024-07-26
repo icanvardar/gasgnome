@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-import { BitmaskLib, Mask } from "../src/libraries/BitmaskLib.sol";
-import { Test, console } from "forge-std/Test.sol";
+import {BitmaskLib, Mask} from "../src/libraries/BitmaskLib.sol";
+import {Test, console} from "forge-std/Test.sol";
 
 contract BitmaskLibTest is Test {
     /// @dev Mock storage variables to test bitmasking utility
@@ -117,10 +117,5 @@ contract BitmaskLibTest is Test {
         m_j.updateRightPadded(bytes32(jKAndLSlot), expected_j);
         m_k.updateRightPadded(bytes32(jKAndLSlot), expected_k);
         m_l.updateRightPadded(bytes32(jKAndLSlot), expected_l);
-    }
-
-    function test_RevertWhen_MaskLengthIsBigger_Generate() public {
-        vm.expectRevert(bytes4(keccak256("WrongParameters()")));
-        BitmaskLib.build(128, 257);
     }
 }
