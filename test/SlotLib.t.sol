@@ -40,7 +40,7 @@ abstract contract MockVariables {
 contract SlotLibTest is MockVariables, Test {
     MockSlots internal ms;
 
-    constructor() {
+    function setUp() public {
         ms = getMockSlots();
     }
 
