@@ -39,8 +39,8 @@ contract BitmaskLibTest is Test {
 
         uint8 i = 0;
         for (i; i < expecteds.length; i++) {
-            Mask m = BitmaskLib.generate((i + 1) * 8);
-            assertEq(bytes32(expecteds[i]), Mask.unwrap(m));
+            bytes32 mask = BitmaskLib.build((i + 1) * 8).value;
+            assertEq(bytes32(expecteds[i]), mask);
         }
     }
 
@@ -53,8 +53,8 @@ contract BitmaskLibTest is Test {
 
         uint8 i = 0;
         for (i; i < expecteds.length; i++) {
-            Mask m = BitmaskLib.generate((i + 1) * 8, (i + 2) * 8);
-            assertEq(bytes32(expecteds[i]), Mask.unwrap(m));
+            bytes32 mask = BitmaskLib.build((i + 1) * 8, (i + 2) * 8).value;
+            assertEq(bytes32(expecteds[i]), mask);
         }
     }
 
@@ -63,11 +63,11 @@ contract BitmaskLibTest is Test {
         uint256 expected_b = 22;
         uint256 expected_c = 33;
 
-        Mask m_b = BitmaskLib.generate(128);
-        Mask m_c = BitmaskLib.generate(128, 128);
+        Mask memory m_b = BitmaskLib.build(128);
+        Mask memory m_c = BitmaskLib.build(128, 128);
 
         m_b.updateLeftPadded(bytes32(bAndCSlot), expected_b);
-        m_c.updateLeftPadded(bytes32(bAndCSlot), expected_c, 128);
+        m_c.updateLeftPadded(bytes32(bAndCSlot), expected_c);
 
         assertEq(expected_b, b);
         assertEq(expected_c, c);
@@ -78,15 +78,15 @@ contract BitmaskLibTest is Test {
         uint256 expected_f = 66;
         uint256 expected_g = 77;
 
-        Mask m_d = BitmaskLib.generate(32); // 32
-        Mask m_e = BitmaskLib.generate(64, 32); // 32 + 64
-        Mask m_f = BitmaskLib.generate(32, 96); // 32 + 64 + 32
-        Mask m_g = BitmaskLib.generate(128, 128); // 32 + 64 + 32 + 128
+        Mask memory m_d = BitmaskLib.build(32); // 32
+        Mask memory m_e = BitmaskLib.build(64, 32); // 32 + 64
+        Mask memory m_f = BitmaskLib.build(32, 96); // 32 + 64 + 32
+        Mask memory m_g = BitmaskLib.build(128, 128); // 32 + 64 + 32 + 128
 
         m_d.updateLeftPadded(bytes32(dEFGSlot), expected_d);
-        m_e.updateLeftPadded(bytes32(dEFGSlot), expected_e, 32);
-        m_f.updateLeftPadded(bytes32(dEFGSlot), expected_f, 96);
-        m_g.updateLeftPadded(bytes32(dEFGSlot), expected_g, 128);
+        m_e.updateLeftPadded(bytes32(dEFGSlot), expected_e);
+        m_f.updateLeftPadded(bytes32(dEFGSlot), expected_f);
+        m_g.updateLeftPadded(bytes32(dEFGSlot), expected_g);
     }
 
     function test_UpdateLeftPadded_ForIntN() public {
@@ -94,11 +94,11 @@ contract BitmaskLibTest is Test {
         int256 expected_x = -11;
         int256 expected_y = -22;
 
-        Mask m_x = BitmaskLib.generate(128);
-        Mask m_y = BitmaskLib.generate(128, 128);
+        Mask memory m_x = BitmaskLib.build(128);
+        Mask memory m_y = BitmaskLib.build(128, 128);
 
         m_x.updateLeftPadded(bytes32(xAndYSlot), expected_x);
-        m_y.updateLeftPadded(bytes32(xAndYSlot), expected_y, 128);
+        m_y.updateLeftPadded(bytes32(xAndYSlot), expected_y);
 
         assertEq(x, expected_x);
         assertEq(y, expected_y);
@@ -110,17 +110,17 @@ contract BitmaskLibTest is Test {
         bytes8 expected_k = "c";
         bytes8 expected_l = "d";
 
-        Mask m_j = BitmaskLib.generate(128);
-        Mask m_k = BitmaskLib.generate(64, 128);
-        Mask m_l = BitmaskLib.generate(64, 192);
+        Mask memory m_j = BitmaskLib.build(128);
+        Mask memory m_k = BitmaskLib.build(64, 128);
+        Mask memory m_l = BitmaskLib.build(64, 192);
 
-        m_j.updateRightPadded(bytes32(jKAndLSlot), expected_j, 128);
-        m_k.updateRightPadded(bytes32(jKAndLSlot), expected_k, 128, 64);
-        m_l.updateRightPadded(bytes32(jKAndLSlot), expected_l, 192, 64);
+        m_j.updateRightPadded(bytes32(jKAndLSlot), expected_j);
+        m_k.updateRightPadded(bytes32(jKAndLSlot), expected_k);
+        m_l.updateRightPadded(bytes32(jKAndLSlot), expected_l);
     }
 
     function test_RevertWhen_MaskLengthIsBigger_Generate() public {
         vm.expectRevert(bytes4(keccak256("WrongParameters()")));
-        BitmaskLib.generate(128, 257);
+        BitmaskLib.build(128, 257);
     }
 }

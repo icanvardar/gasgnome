@@ -1,61 +1,53 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
-type Mask is bytes32;
+struct Mask {
+    bytes32 value;
+    uint8 bits;
+    uint8 leftShiftedBits;
+}
 
 using BitmaskLib for Mask global;
 
 library BitmaskLib {
-    function generate(uint256 maskLength) public pure returns (Mask mask) {
+    function build(uint256 bits) public pure returns (Mask memory mask) {
         assembly {
-            mask := not(sub(shl(maskLength, 1), 1))
+            mstore(mask, not(sub(shl(bits, 1), 1)))
+            mstore(add(mask, 0x20), bits)
         }
     }
 
-    function generate(uint256 maskLength, uint256 leftShiftLength) public pure returns (Mask mask) {
+    function build(uint256 bits, uint256 leftShiftedBits) public pure returns (Mask memory mask) {
         assembly {
             /// bytes4(keccak256("WrongParameters()"))
-            if gt(leftShiftLength, 0x100) {
+            if gt(leftShiftedBits, 0x100) {
                 mstore(0x80, 0xbd28cf5f)
                 revert(0x9c, 0x04)
             }
 
-            mask := not(shl(leftShiftLength, sub(shl(maskLength, 1), 1)))
+            mstore(mask, not(shl(leftShiftedBits, sub(shl(bits, 1), 1))))
+            mstore(add(mask, 0x20), bits)
+            mstore(add(mask, 0x40), leftShiftedBits)
         }
     }
 
     /// @dev Mask functions
-    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data) public {
-        assembly {
-            function updateData(old, new, mask) -> res {
-                res := and(old, mask)
-                res := or(res, new)
-            }
-
-            sstore(slot, updateData(sload(slot), data, m))
-        }
-    }
-
-    function updateLeftPadded(Mask m, bytes32 slot, bytes32 data, uint256 leftShiftLength) public {
+    function updateLeftPadded(Mask memory m, bytes32 slot, bytes32 data) public {
         assembly {
             function updateData(old, new, mask, lsl) -> res {
                 res := and(old, mask)
                 res := or(res, shl(lsl, new))
             }
 
-            sstore(slot, updateData(sload(slot), data, m, leftShiftLength))
+            sstore(slot, updateData(sload(slot), data, mload(m), mload(add(m, 0x40))))
         }
     }
 
-    function updateLeftPadded(Mask m, bytes32 slot, uint256 data) public {
+    function updateLeftPadded(Mask memory m, bytes32 slot, uint256 data) public {
         updateLeftPadded(m, slot, bytes32(data));
     }
 
-    function updateLeftPadded(Mask m, bytes32 slot, uint256 data, uint256 leftShiftLength) public {
-        updateLeftPadded(m, slot, bytes32(data), leftShiftLength);
-    }
-
-    function updateLeftPadded(Mask m, bytes32 slot, int256 data) public {
+    function updateLeftPadded(Mask memory m, bytes32 slot, int256 data) public {
         bytes32 tmp;
         assembly {
             tmp := data
@@ -63,41 +55,16 @@ library BitmaskLib {
         updateLeftPadded(m, slot, tmp);
     }
 
-    function updateLeftPadded(Mask m, bytes32 slot, int256 data, uint256 leftShiftLength) public {
-        bytes32 tmp;
-        assembly {
-            tmp := data
-        }
-        updateLeftPadded(m, slot, tmp, leftShiftLength);
-    }
-
-    function updateRightPadded(Mask m, bytes32 slot, bytes32 data, uint256 maskLength) public {
-        assembly {
-            function updateData(old, new, mask) -> res {
-                res := and(old, mask)
-                res := or(res, new)
-            }
-
-            sstore(slot, updateData(sload(slot), shr(sub(0x100, maskLength), data), m))
-        }
-    }
-
-    function updateRightPadded(
-        Mask m,
-        bytes32 slot,
-        bytes32 data,
-        uint256 maskLength,
-        uint256 leftShiftLength
-    )
-        public
-    {
+    function updateRightPadded(Mask memory m, bytes32 slot, bytes32 data) public {
         assembly {
             function updateData(old, new, mask, lsl) -> res {
                 res := and(old, mask)
                 res := or(res, shl(lsl, new))
             }
 
-            sstore(slot, updateData(sload(slot), shr(sub(0x100, maskLength), data), m, leftShiftLength))
+            sstore(
+                slot, updateData(sload(slot), shr(sub(0x100, mload(add(m, 0x20))), data), mload(m), mload(add(m, 0x40)))
+            )
         }
     }
 
@@ -112,18 +79,6 @@ library BitmaskLib {
 
                 break
             }
-        }
-    }
-
-    function toMask(bytes32 from) public pure returns (Mask to) {
-        assembly {
-            to := from
-        }
-    }
-
-    function toBytes32(Mask from) public pure returns (bytes32 to) {
-        assembly {
-            to := from
         }
     }
 }
