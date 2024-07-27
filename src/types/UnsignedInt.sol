@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
+import { ArithmeticLib } from "../libraries/ArithmeticLib.sol";
+
 type UnsignedInt is bytes32;
 
 using {
@@ -74,21 +76,10 @@ using UnsignedIntLib for UnsignedInt global;
 
 library UnsignedIntLib {
     function convertWithSize(UnsignedInt u, uint16 sizeInBytes) public pure returns (uint256 to) {
-        assembly {
-            /// TODO: add custom error here - sizeInBytes cannot be zero/cannot be bigger than 256 bits
-            if or(eq(sizeInBytes, 0), gt(sizeInBytes, 0x100)) { revert(0x00, 0x00) }
-
-            /// TODO: add custom error here - sizeInBytes has to be multiple of eight
-            if gt(mod(sizeInBytes, 0x8), 0) { revert(0x00, 0x00) }
-        }
-
-        uint8 sizeCap = cap(sizeInBits(u));
+        bytes32 result = ArithmeticLib.convertWithSize(UnsignedInt.unwrap(u), sizeInBytes, sizeInBits(u));
 
         assembly {
-            /// TODO: add custom error here - size cap cannot be bigger than given size in bytes
-            if gt(sizeCap, sizeInBytes) { revert(0x00, 0x00) }
-
-            to := u
+            to := result
         }
     }
 
@@ -113,19 +104,6 @@ library UnsignedIntLib {
             }
 
             size := mul(size, 0x4)
-        }
-    }
-
-    /// NOTE: finds the nearest bit cap in multiple of eight
-    function cap(uint8 bitSize) public pure returns (uint8 res) {
-        assembly {
-            for { let i := 0x0 } lt(i, 0x21) { i := add(i, 1) } {
-                let tmp := mul(add(i, 1), 8)
-                if or(gt(tmp, bitSize), eq(tmp, bitSize)) {
-                    res := tmp
-                    break
-                }
-            }
         }
     }
 }
