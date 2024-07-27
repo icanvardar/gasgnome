@@ -83,7 +83,7 @@ library UnsignedIntLib {
         }
     }
 
-    function sizeInBits(UnsignedInt u) public pure returns (uint8 size) {
+    function sizeInBits(UnsignedInt u) public pure returns (uint16 size) {
         assembly {
             let tmp
             for { let i := 0x1f } gt(i, 0x0) { i := sub(i, 1) } {

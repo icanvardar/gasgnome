@@ -68,7 +68,7 @@ library SignedIntLib {
         }
     }
 
-    function sizeInBits(SignedInt s) public pure returns (uint8 size) {
+    function sizeInBits(SignedInt s) public pure returns (uint16 size) {
         assembly {
             let tmp
             let isNegative := sgt(0, s)
