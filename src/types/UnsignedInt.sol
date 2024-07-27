@@ -75,8 +75,8 @@ function expUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 using UnsignedIntLib for UnsignedInt global;
 
 library UnsignedIntLib {
-    function convertWithSize(UnsignedInt u, uint16 sizeInBytes) public pure returns (uint256 to) {
-        bytes32 result = ArithmeticLib.convertWithSize(UnsignedInt.unwrap(u), sizeInBytes, sizeInBits(u));
+    function convertWithSize(UnsignedInt u, uint16 desiredBits) public pure returns (uint256 to) {
+        bytes32 result = ArithmeticLib.convertWithSize(UnsignedInt.unwrap(u), desiredBits, sizeInBits(u));
 
         assembly {
             to := result

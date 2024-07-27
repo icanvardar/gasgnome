@@ -2,20 +2,20 @@
 pragma solidity 0.8.26;
 
 library ArithmeticLib {
-    function convertWithSize(bytes32 b, uint16 sizeInBytes, uint8 sizeInBits) public pure returns (bytes32 to) {
+    function convertWithSize(bytes32 b, uint16 desiredBits, uint8 sizeInBits) public pure returns (bytes32 to) {
         assembly {
-            /// TODO: add custom error here - sizeInBytes cannot be zero/cannot be bigger than 256 bits
-            if or(eq(sizeInBytes, 0), gt(sizeInBytes, 0x100)) { revert(0x00, 0x00) }
+            /// TODO: add custom error here - desiredBits cannot be zero/cannot be bigger than 256 bits
+            if or(eq(desiredBits, 0), gt(desiredBits, 0x100)) { revert(0x00, 0x00) }
 
-            /// TODO: add custom error here - sizeInBytes has to be multiple of eight
-            if gt(mod(sizeInBytes, 0x8), 0) { revert(0x00, 0x00) }
+            /// TODO: add custom error here - desiredBits has to be multiple of eight
+            if gt(mod(desiredBits, 0x8), 0) { revert(0x00, 0x00) }
         }
 
         uint8 sizeCap = cap(sizeInBits);
 
         assembly {
             /// TODO: add custom error here - size cap cannot be bigger than given size in bytes
-            if gt(sizeCap, sizeInBytes) { revert(0x00, 0x00) }
+            if gt(sizeCap, desiredBits) { revert(0x00, 0x00) }
 
             to := b
         }

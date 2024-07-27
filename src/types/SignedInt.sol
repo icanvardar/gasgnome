@@ -60,8 +60,8 @@ function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 using SignedIntLib for SignedInt global;
 
 library SignedIntLib {
-    function convertWithSize(SignedInt u, uint16 sizeInBytes) public pure returns (int256 to) {
-        bytes32 result = ArithmeticLib.convertWithSize(SignedInt.unwrap(u), sizeInBytes, sizeInBits(u));
+    function convertWithSize(SignedInt u, uint16 desiredBits) public pure returns (int256 to) {
+        bytes32 result = ArithmeticLib.convertWithSize(SignedInt.unwrap(u), desiredBits, sizeInBits(u));
 
         assembly {
             to := result
