@@ -39,8 +39,8 @@ function subUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function mulUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 0 { res := 0 }
-        case 1 { res := mul(left, right) }
+        case 1 { res := 0 }
+        default { res := mul(left, right) }
     }
 }
 
