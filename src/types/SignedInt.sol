@@ -29,8 +29,8 @@ function subSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 function mulSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 0 { res := 0 }
-        case 1 { res := mul(left, right) }
+        case 1 { res := 0 }
+        default { res := mul(left, right) }
     }
 }
 
