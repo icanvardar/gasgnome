@@ -42,16 +42,16 @@ function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
             revert(0x9c, 0x04)
         }
 
-        let leftNeg := slt(left, 0)
-        let rightNeg := slt(right, 0)
-        let sign := xor(leftNeg, rightNeg)
+        let l := slt(left, 0)
+        let r := slt(right, 0)
+        let sign := xor(l, r)
 
-        if leftNeg { left := sub(0, left) }
-        if rightNeg { right := sub(0, right) }
+        if l { left := sub(0, left) }
+        if r { right := sub(0, right) }
 
-        let absRes := div(left, right)
-        res := absRes
-        if sign { res := sub(0, absRes) }
+        res := div(left, right)
+
+        if sign { res := sub(0, res) }
     }
 }
 
@@ -63,13 +63,13 @@ function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
             revert(0x9c, 0x04)
         }
 
-        let leftNeg := slt(left, 0)
-        if leftNeg { left := sub(0, left) }
+        let l := slt(left, 0)
+        if l { left := sub(0, left) }
         if slt(right, 0) { right := sub(0, right) }
 
-        let absRes := mod(left, right)
-        res := absRes
-        if leftNeg { res := sub(0, absRes) }
+        res := mod(left, right)
+
+        if l { res := sub(0, res) }
     }
 }
 
@@ -81,12 +81,9 @@ function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
             revert(0x9c, 0x04)
         }
 
-        let leftNeg := slt(left, 0)
-        let absLeft := left
+        res := exp(left, right)
 
-        res := exp(absLeft, right)
-
-        if leftNeg { res := sub(0, res) }
+        if slt(left, 0) { res := sub(0, res) }
     }
 }
 
