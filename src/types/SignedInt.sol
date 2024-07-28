@@ -57,12 +57,19 @@ function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 
 function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        if iszero(right) {
-            /// TODO: add custom error here - modulo by zero check
-            revert(0x00, 0x00)
+        if eq(right, 0) {
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
-        res := mod(left, right)
+        let leftNeg := slt(left, 0)
+        if leftNeg { left := sub(0, left) }
+        if slt(right, 0) { right := sub(0, right) }
+
+        let absRes := mod(left, right)
+        res := absRes
+        if leftNeg { res := sub(0, absRes) }
     }
 }
 
