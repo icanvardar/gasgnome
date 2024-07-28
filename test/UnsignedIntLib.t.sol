@@ -94,24 +94,21 @@ contract UnsignedIntLibTest is Test {
     }
 
     function test_RevertWhen_DesiredBitsAreZero_ConvertWithSize() public {
-        uint256 u_int = 1024;
-        UnsignedInt u = UnsignedInt.wrap(bytes32(u_int));
+        UnsignedInt u = UnsignedInt.wrap(0x0);
 
         vm.expectRevert();
         u.convertWithSize(0);
     }
 
     function test_RevertWhen_DesiredBitsAreBiggerThan256Bits_ConvertWithSize() public {
-        uint256 u_int = 1024;
-        UnsignedInt u = UnsignedInt.wrap(bytes32(u_int));
+        UnsignedInt u = UnsignedInt.wrap(0x0);
 
         vm.expectRevert();
         u.convertWithSize(257);
     }
 
     function test_RevertWhen_DesiredBitsAreNotMultipleOfEight_ConvertWithSize() public {
-        uint256 u_int = 1024;
-        UnsignedInt u = UnsignedInt.wrap(bytes32(u_int));
+        UnsignedInt u = UnsignedInt.wrap(0x0);
 
         vm.expectRevert();
         u.convertWithSize(33);
