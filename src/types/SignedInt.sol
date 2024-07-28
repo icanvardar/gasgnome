@@ -36,7 +36,22 @@ function mulSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 
 function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        res := div(left, right)
+        if eq(right, 0) {
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
+        }
+
+        let leftNeg := slt(left, 0)
+        let rightNeg := slt(right, 0)
+        let sign := xor(leftNeg, rightNeg)
+
+        if leftNeg { left := sub(0, left) }
+        if rightNeg { right := sub(0, right) }
+
+        let absRes := div(left, right)
+        res := absRes
+        if sign { res := sub(0, absRes) }
     }
 }
 
