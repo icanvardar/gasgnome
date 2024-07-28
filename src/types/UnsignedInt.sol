@@ -19,8 +19,9 @@ function addUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
         res := add(left, right)
 
         if lt(res, left) {
-            /// TODO: add custom error here - overflow check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("Overflow()")) => 0x35278d12
+            mstore(0x80, 0x35278d12)
+            revert(0x9c, 0x04)
         }
     }
 }
@@ -28,8 +29,9 @@ function addUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function subUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if gt(right, left) {
-            /// TODO: add custom error here - underflow check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("Underflow()")) => 0xcaccb6d9
+            mstore(0x80, 0xcaccb6d9)
+            revert(0x9c, 0x04)
         }
 
         res := sub(left, right)
@@ -47,8 +49,9 @@ function mulUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function divUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if eq(right, 0) {
-            /// TODO: add custom error here - division by zero check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
         res := div(left, right)
@@ -58,8 +61,9 @@ function divUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function modUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if iszero(right) {
-            /// TODO: add custom error here - modulo by zero check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
         res := mod(left, right)
