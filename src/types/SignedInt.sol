@@ -29,46 +29,79 @@ function subSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 function mulSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 0 { res := 0 }
-        case 1 { res := mul(left, right) }
+        case 1 { res := 0 }
+        default { res := mul(left, right) }
     }
 }
 
 function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        res := div(left, right)
+        if eq(right, 0) {
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
+        }
+
+        let leftNeg := slt(left, 0)
+        let rightNeg := slt(right, 0)
+        let sign := xor(leftNeg, rightNeg)
+
+        if leftNeg { left := sub(0, left) }
+        if rightNeg { right := sub(0, right) }
+
+        let absRes := div(left, right)
+        res := absRes
+        if sign { res := sub(0, absRes) }
     }
 }
 
 function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        if iszero(right) {
-            /// TODO: add custom error here - modulo by zero check
-            revert(0x00, 0x00)
+        if eq(right, 0) {
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
-        res := mod(left, right)
+        let leftNeg := slt(left, 0)
+        if leftNeg { left := sub(0, left) }
+        if slt(right, 0) { right := sub(0, right) }
+
+        let absRes := mod(left, right)
+        res := absRes
+        if leftNeg { res := sub(0, absRes) }
     }
 }
 
 function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        res := exp(left, right)
+        if slt(right, 0) {
+            /// bytes4(keccak256("NegativeExponent()"))
+            mstore(0x80, 0xe782e44b)
+            revert(0x9c, 0x04)
+        }
+
+        let leftNeg := slt(left, 0)
+        let absLeft := left
+
+        res := exp(absLeft, right)
+
+        if leftNeg { res := sub(0, res) }
     }
 }
 
 using SignedIntLib for SignedInt global;
 
 library SignedIntLib {
-    function convertWithSize(SignedInt u, uint16 sizeInBytes) public pure returns (int256 to) {
-        bytes32 result = ArithmeticLib.convertWithSize(SignedInt.unwrap(u), sizeInBytes, sizeInBits(u));
+    function convertWithSize(SignedInt u, uint16 desiredBits) public pure returns (int256 to) {
+        bytes32 result = ArithmeticLib.convertWithSize(SignedInt.unwrap(u), desiredBits, sizeInBits(u));
 
         assembly {
             to := result
         }
     }
 
-    function sizeInBits(SignedInt s) public pure returns (uint8 size) {
+    function sizeInBits(SignedInt s) public pure returns (uint16 size) {
         assembly {
             let tmp
             let isNegative := sgt(0, s)

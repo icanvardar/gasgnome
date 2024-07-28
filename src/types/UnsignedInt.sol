@@ -19,8 +19,9 @@ function addUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
         res := add(left, right)
 
         if lt(res, left) {
-            /// TODO: add custom error here - overflow check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("Overflow()")) => 0x35278d12
+            mstore(0x80, 0x35278d12)
+            revert(0x9c, 0x04)
         }
     }
 }
@@ -28,8 +29,9 @@ function addUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function subUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if gt(right, left) {
-            /// TODO: add custom error here - underflow check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("Underflow()")) => 0xcaccb6d9
+            mstore(0x80, 0xcaccb6d9)
+            revert(0x9c, 0x04)
         }
 
         res := sub(left, right)
@@ -39,16 +41,17 @@ function subUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function mulUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 0 { res := 0 }
-        case 1 { res := mul(left, right) }
+        case 1 { res := 0 }
+        default { res := mul(left, right) }
     }
 }
 
 function divUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if eq(right, 0) {
-            /// TODO: add custom error here - division by zero check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
         res := div(left, right)
@@ -58,8 +61,9 @@ function divUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function modUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         if iszero(right) {
-            /// TODO: add custom error here - modulo by zero check
-            revert(0x00, 0x00)
+            /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
+            mstore(0x80, 0x23d359a3)
+            revert(0x9c, 0x04)
         }
 
         res := mod(left, right)
@@ -75,15 +79,15 @@ function expUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 using UnsignedIntLib for UnsignedInt global;
 
 library UnsignedIntLib {
-    function convertWithSize(UnsignedInt u, uint16 sizeInBytes) public pure returns (uint256 to) {
-        bytes32 result = ArithmeticLib.convertWithSize(UnsignedInt.unwrap(u), sizeInBytes, sizeInBits(u));
+    function convertWithSize(UnsignedInt u, uint16 desiredBits) public pure returns (uint256 to) {
+        bytes32 result = ArithmeticLib.convertWithSize(UnsignedInt.unwrap(u), desiredBits, sizeInBits(u));
 
         assembly {
             to := result
         }
     }
 
-    function sizeInBits(UnsignedInt u) public pure returns (uint8 size) {
+    function sizeInBits(UnsignedInt u) public pure returns (uint16 size) {
         assembly {
             let tmp
             for { let i := 0x1f } gt(i, 0x0) { i := sub(i, 1) } {
