@@ -75,7 +75,18 @@ function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt r
 
 function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
     assembly {
-        res := exp(left, right)
+        if slt(right, 0) {
+            /// bytes4(keccak256("NegativeExponent()"))
+            mstore(0x80, 0xe782e44b)
+            revert(0x9c, 0x04)
+        }
+
+        let leftNeg := slt(left, 0)
+        let absLeft := left
+
+        res := exp(absLeft, right)
+
+        if leftNeg { res := sub(0, res) }
     }
 }
 
