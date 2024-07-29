@@ -45,7 +45,7 @@ library MemoryLib {
             let u := 0x6ffffff
             let r := div(ptr, 0x20)
 
-            result := sub(ptr, r)
+            result := sub(u, r)
         }
     }
 }
