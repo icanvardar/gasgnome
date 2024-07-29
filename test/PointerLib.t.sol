@@ -78,7 +78,7 @@ contract PointerLibTest is Test {
         Pointer result = ptr.memoryStorageLocation();
         Pointer expected;
         assembly {
-            expected := sub(0x6ffffff, div(ptr, 0x20))
+            expected := sub(0x6fff, div(ptr, 0x20))
         }
 
         assertEq(Pointer.unwrap(expected), Pointer.unwrap(result));

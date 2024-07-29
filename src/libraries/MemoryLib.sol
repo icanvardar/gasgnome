@@ -62,7 +62,7 @@ library MemoryLib {
 
     function memoryStorageLocation(bytes32 ptr) public pure returns (bytes32 result) {
         assembly {
-            let u := 0x6ffffff
+            let u := 0x6fff
             let r := div(ptr, 0x20)
 
             result := sub(u, r)

@@ -80,7 +80,7 @@ contract MemoryLibTest is Test {
         bytes32 result = MemoryLib.memoryStorageLocation(pseudoPtr);
         bytes32 expected;
         assembly {
-            expected := sub(0x6ffffff, div(pseudoPtr, 0x20))
+            expected := sub(0x6fff, div(pseudoPtr, 0x20))
         }
 
         assertEq(result, expected);

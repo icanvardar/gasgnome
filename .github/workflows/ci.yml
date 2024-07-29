@@ -81,5 +81,5 @@ jobs:
 
       - name: Run Forge tests
         run: |
-          forge test -vvv
+          forge test --memory-limit 268435456 -vvv
         id: test
