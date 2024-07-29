@@ -41,7 +41,7 @@ library MemoryLib {
 
         bytes32 msp = memoryStorageLocation(freePtr);
         assembly {
-            if eq(isImmutable, 0x1) { mstore(mload(msp), 0x1) }
+            if eq(isImmutable, 0x1) { mstore(msp, 0x1) }
         }
     }
 
