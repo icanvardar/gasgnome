@@ -5,6 +5,8 @@ import { MemoryLib } from "../src/libraries/MemoryLib.sol";
 import { Test, console } from "forge-std/Test.sol";
 
 contract MemoryLibTest is Test {
+    error ImmutableVariable();
+
     function test_FreeMemory() public pure {
         bytes32 result = MemoryLib.freeMemory();
         bytes32 expected = bytes32(abi.encode(0x80));
@@ -49,9 +51,55 @@ contract MemoryLibTest is Test {
         assertEq(expectedNextPtr, nextPtr);
     }
 
-    function test_Update() public { }
+    function test_Update() public pure {
+        bytes32 data = "am i data?";
+        bytes32 newData = "yes, you are";
 
-    function test_MemoryStorageLocation() public { }
+        bytes32 dataLocation;
+        assembly {
+            dataLocation := 0x100
+            mstore(dataLocation, data)
+        }
 
-    function test_RevertWhen_VariableIsImmutable_Update() public { }
+        MemoryLib.update(dataLocation, newData);
+
+        bytes32 updatedData;
+        assembly {
+            updatedData := mload(dataLocation)
+        }
+
+        assertEq(updatedData, newData);
+    }
+
+    function test_MemoryStorageLocation() public pure {
+        bytes32 pseudoPtr;
+        assembly {
+            pseudoPtr := 0x100
+        }
+
+        bytes32 result = MemoryLib.memoryStorageLocation(pseudoPtr);
+        bytes32 expected;
+        assembly {
+            expected := sub(0x6ffffff, div(pseudoPtr, 0x20))
+        }
+
+        assertEq(result, expected);
+    }
+
+    function test_RevertWhen_VariableIsImmutable_Update() public {
+        bytes32 data = "hey";
+
+        bytes32 nextPtr = MemoryLib.store(data, true);
+        bytes32 location;
+        bytes32 am;
+        assembly {
+            location := sub(nextPtr, 0x20)
+            am := mload(location)
+        }
+
+        vm.expectRevert(ImmutableVariable.selector);
+        MemoryLib.update(location, "hello");
+
+        console.log(vm.toString(am));
+    }
 }
