@@ -2,19 +2,22 @@
 pragma solidity 0.8.26;
 
 library MemoryLib {
-    function load() public pure returns (bytes32 result) {
+    function freeMemory() internal pure returns (bytes32 result) {
         assembly {
             result := mload(0x40)
         }
     }
 
-    function next() public pure returns (bytes32 result) {
+    function nextFreeMemory() internal pure returns (bytes32 result) {
         assembly {
             result := add(mload(0x40), 0x20)
         }
     }
 
-    function store(bytes32 data) public pure returns (bytes32 nextPtr) {
+    /// NOTE: This function has to be internal. If it's not internal,
+    /// compiler cleans its memory usage up after it's called in
+    /// another scope.
+    function store(bytes32 data) internal pure returns (bytes32 nextPtr) {
         assembly {
             let freePtr := mload(0x40)
 
@@ -24,7 +27,9 @@ library MemoryLib {
         }
     }
 
-    function store(bytes32 data, bool isImmutable) public pure returns (bytes32 nextPtr) {
+    /// NOTE: Immutability is applicable as long as this library functions
+    /// are being used.
+    function store(bytes32 data, bool isImmutable) internal pure returns (bytes32 nextPtr) {
         bytes32 freePtr;
         assembly {
             freePtr := mload(0x40)
@@ -40,7 +45,21 @@ library MemoryLib {
         }
     }
 
-    function memoryStorageLocation(bytes32 ptr) internal pure returns (bytes32 result) {
+    function update(bytes32 ptr, bytes32 data) internal pure {
+        bytes32 msp = memoryStorageLocation(ptr);
+        assembly {
+            if eq(mload(msp), 0x1) {
+                /// TODO: Add custom error here - variable is immutable
+                revert(0x00, 0x00)
+            }
+        }
+
+        assembly {
+            mstore(ptr, data)
+        }
+    }
+
+    function memoryStorageLocation(bytes32 ptr) public pure returns (bytes32 result) {
         assembly {
             let u := 0x6ffffff
             let r := div(ptr, 0x20)
