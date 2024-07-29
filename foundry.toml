@@ -9,6 +9,7 @@
  bytecode_hash = "none"
  evm_version = "shanghai"
  fs_permissions = [{ access = "read-write", path = "./" }]
+ memory_limit = 268435456
  optimizer = true
  optimizer_runs = 1000
  out = "out"
