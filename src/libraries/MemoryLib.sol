@@ -49,8 +49,9 @@ library MemoryLib {
         bytes32 msp = memoryStorageLocation(ptr);
         assembly {
             if eq(mload(msp), 0x1) {
-                /// TODO: Add custom error here - variable is immutable
-                revert(0x00, 0x00)
+                /// @dev bytes4(keccak256("ImmutableVariable()")) => 0x8e751c05
+                mstore(0x80, 0x8e751c05)
+                revert(0x9c, 0x04)
             }
         }
 
