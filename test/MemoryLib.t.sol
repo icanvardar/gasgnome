@@ -91,15 +91,11 @@ contract MemoryLibTest is Test {
 
         bytes32 nextPtr = MemoryLib.store(data, true);
         bytes32 location;
-        bytes32 am;
         assembly {
             location := sub(nextPtr, 0x20)
-            am := mload(location)
         }
 
         vm.expectRevert(ImmutableVariable.selector);
         MemoryLib.update(location, "hello");
-
-        console.log(vm.toString(am));
     }
 }
