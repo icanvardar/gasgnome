@@ -8,18 +8,25 @@ All notable changes to this project will be documented in this file.
 
 - *(MemoryLib)* Add functions
 - *(Pointer)* Add custom type and its functions
+- *(ErrorLib)* Add library functions
+- *(EventLib)* Add untested library functions
+- *(EventLib)* Duplicate functions by their parameters
+- *(EventLib)* Add anonymous event emitters
 
 ### 🐛 Bug Fixes
 
 - *(MemoryLib)* Update `memoryStorageLocation`
 - *(MemoryLib)* Fix `update` function bug
 - *(PointerLib)* Fix `update` function bug
+- *(EventLib)* Update anonymous emitters
 
 ### 🚜 Refactor
 
 - *(MemoryLib)* Update function visibility
 - *(Pointer)* Update function visibility
 - *(MemoryLib)* Add custom error
+- Update maximum memory location
+- *(EventLib)* Remove `getDataLocations` function
 
 ### 🎨 Styling
 
@@ -32,9 +39,17 @@ All notable changes to this project will be documented in this file.
 - *(MemoryLib)* Update test cases
 - *(MemoryLib)* Update test cases
 - *(PointerLib)* Add test cases
+- *(ErrorLib)* Update test cases
+- *(EventLib)* Add test cases
+- *(EventLib)* Update test cases
 
 ### ⚙️ Miscellaneous Tasks
 
+- Update Gasgnome.sol
+- Update CHANGELOG.md
+- Update foundry.toml
+- Update ci.yml
+- Update Gasgnome.sol
 - Update Gasgnome.sol
 
 ## [0.1.0] - 2024-07-28
