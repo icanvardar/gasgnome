@@ -101,39 +101,52 @@ library EventLib {
         }
     }
 
-    function emitEventAnonymous(
-        EventArgIndexed[] memory indexedArgs,
-        EventArgNonIndexed[] memory nonIndexedArgs
-    )
-        public
-    {
-        assembly {
-            let iLen := mload(indexedArgs)
-            let iStart := add(indexedArgs, 0x20)
+    /// @dev anonymous + non-indexed
+    function emitEvent(EventArgNonIndexed[] memory nonIndexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), nonIndexedArgs);
+    }
 
-            let niLen := mload(nonIndexedArgs)
-            let niStart
-            let niSize
-            if gt(niLen, 0) {
-                niStart := add(nonIndexedArgs, 0x20)
-                niSize := mul(niLen, 0x20)
-            }
+    /// @dev anonymous + indexed(1) + no data
+    function emitEvent(EventArgIndexed[1] memory indexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs);
+    }
 
-            switch iLen
-            case 0 { log1(niStart, niSize, 0x0) }
-            case 1 { log2(niStart, niSize, 0x0, mload(iStart)) }
-            case 2 { log3(niStart, niSize, 0x0, mload(iStart), mload(add(iStart, 0x20))) }
-            case 3 { log4(niStart, niSize, 0x0, mload(iStart), mload(add(iStart, 0x20)), mload(add(iStart, 0x40))) }
-            case 4 {
-                log4(
-                    niStart,
-                    niSize,
-                    mload(iStart),
-                    mload(add(iStart, 0x20)),
-                    mload(add(iStart, 0x40)),
-                    mload(add(iStart, 0x60))
-                )
-            }
-        }
+    /// @dev anonymous + indexed(1)
+    function emitEvent(EventArgIndexed[1] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+    }
+
+    /// @dev anonymous + indexed(2) + no data
+    function emitEvent(EventArgIndexed[2] memory indexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs);
+    }
+
+    /// @dev anonymous + indexed(2)
+    function emitEvent(EventArgIndexed[2] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+    }
+
+    /// @dev anonymous + indexed(3) + no data
+    function emitEvent(EventArgIndexed[3] memory indexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs);
+    }
+
+    /// @dev anonymous + indexed(3)
+    function emitEvent(EventArgIndexed[3] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
+        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+    }
+
+    /// @dev anonymous + indexed(4) + no data
+    function emitEvent(EventArgIndexed[4] memory indexedArgs) internal {
+        EventArgIndexed[3] memory tmp = [indexedArgs[1], indexedArgs[2], indexedArgs[3]];
+
+        emitEvent(EventHash.wrap(EventArgIndexed.unwrap(indexedArgs[0])), tmp);
+    }
+
+    /// @dev anonymous + indexed(4)
+    function emitEvent(EventArgIndexed[4] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
+        EventArgIndexed[3] memory tmp = [indexedArgs[1], indexedArgs[2], indexedArgs[3]];
+
+        emitEvent(EventHash.wrap(EventArgIndexed.unwrap(indexedArgs[0])), tmp, nonIndexedArgs);
     }
 }
