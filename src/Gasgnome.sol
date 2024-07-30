@@ -5,6 +5,7 @@ pragma solidity 0.8.26;
 import "./libraries/ArithmeticLib.sol";
 import "./libraries/BitmaskLib.sol";
 import "./libraries/ErrorLib.sol";
+import "./libraries/EventLib.sol";
 import "./libraries/MemoryLib.sol";
 import "./libraries/StorageLib.sol";
 
