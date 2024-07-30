@@ -101,52 +101,92 @@ library EventLib {
         }
     }
 
+    /// NOTE: It is not recommended to use this function. It may not always work as expected.
     /// @dev anonymous + non-indexed
     function emitEvent(EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), nonIndexedArgs);
+        assembly {
+            log0(add(nonIndexedArgs, 0x20), mul(mload(nonIndexedArgs), 0x20))
+        }
     }
 
     /// @dev anonymous + indexed(1) + no data
     function emitEvent(EventArgIndexed[1] memory indexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs);
+        assembly {
+            log1(0x00, 0x00, mload(indexedArgs))
+        }
     }
 
     /// @dev anonymous + indexed(1)
     function emitEvent(EventArgIndexed[1] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+        assembly {
+            log1(add(nonIndexedArgs, 0x20), mul(mload(nonIndexedArgs), 0x20), mload(indexedArgs))
+        }
     }
 
     /// @dev anonymous + indexed(2) + no data
     function emitEvent(EventArgIndexed[2] memory indexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs);
+        assembly {
+            log2(0x00, 0x00, mload(indexedArgs), mload(add(indexedArgs, 0x20)))
+        }
     }
 
     /// @dev anonymous + indexed(2)
     function emitEvent(EventArgIndexed[2] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+        assembly {
+            log2(
+                add(nonIndexedArgs, 0x20),
+                mul(mload(nonIndexedArgs), 0x20),
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20))
+            )
+        }
     }
 
     /// @dev anonymous + indexed(3) + no data
     function emitEvent(EventArgIndexed[3] memory indexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs);
+        assembly {
+            log3(0x00, 0x00, mload(indexedArgs), mload(add(indexedArgs, 0x20)), mload(add(indexedArgs, 0x40)))
+        }
     }
 
     /// @dev anonymous + indexed(3)
     function emitEvent(EventArgIndexed[3] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        emitEvent(EventHash.wrap(0x00), indexedArgs, nonIndexedArgs);
+        assembly {
+            log3(
+                add(nonIndexedArgs, 0x20),
+                mul(mload(nonIndexedArgs), 0x20),
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20)),
+                mload(add(indexedArgs, 0x40))
+            )
+        }
     }
 
     /// @dev anonymous + indexed(4) + no data
     function emitEvent(EventArgIndexed[4] memory indexedArgs) internal {
-        EventArgIndexed[3] memory tmp = [indexedArgs[1], indexedArgs[2], indexedArgs[3]];
-
-        emitEvent(EventHash.wrap(EventArgIndexed.unwrap(indexedArgs[0])), tmp);
+        assembly {
+            log4(
+                0x00,
+                0x00,
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20)),
+                mload(add(indexedArgs, 0x40)),
+                mload(add(indexedArgs, 0x60))
+            )
+        }
     }
 
     /// @dev anonymous + indexed(4)
     function emitEvent(EventArgIndexed[4] memory indexedArgs, EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        EventArgIndexed[3] memory tmp = [indexedArgs[1], indexedArgs[2], indexedArgs[3]];
-
-        emitEvent(EventHash.wrap(EventArgIndexed.unwrap(indexedArgs[0])), tmp, nonIndexedArgs);
+        assembly {
+            log4(
+                add(nonIndexedArgs, 0x20),
+                mul(mload(nonIndexedArgs), 0x20),
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20)),
+                mload(add(indexedArgs, 0x40)),
+                mload(add(indexedArgs, 0x60))
+            )
+        }
     }
 }
