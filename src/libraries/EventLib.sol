@@ -12,39 +12,6 @@ type EventArgIndexed is bytes32;
 type EventArgNonIndexed is bytes32;
 
 library EventLib {
-    function getDataLocations(
-        EventArgIndexed[] memory indexedArgs,
-        EventArgNonIndexed[] memory nonIndexedArgs
-    )
-        internal
-        pure
-        returns (bytes32 iStart, bytes32 niStart, bytes32 niSize)
-    {
-        assembly {
-            iStart := add(indexedArgs, 0x20)
-
-            let niLen := mload(nonIndexedArgs)
-            if gt(niLen, 0) {
-                niStart := add(nonIndexedArgs, 0x20)
-                niSize := mul(niLen, 0x20)
-            }
-        }
-    }
-
-    function getDataLocations(EventArgNonIndexed[] memory nonIndexedArgs)
-        internal
-        pure
-        returns (bytes32 niStart, bytes32 niSize)
-    {
-        assembly {
-            let niLen := mload(nonIndexedArgs)
-            if gt(niLen, 0) {
-                niStart := add(nonIndexedArgs, 0x20)
-                niSize := mul(niLen, 0x20)
-            }
-        }
-    }
-
     /// @dev non-anonymous + non-indexed + no data
     function emitEvent(EventHash eventHash) internal {
         assembly {
@@ -54,10 +21,15 @@ library EventLib {
 
     /// @dev non-anonymous + non-indexed
     function emitEvent(EventHash eventHash, EventArgNonIndexed[] memory nonIndexedArgs) internal {
-        (bytes32 niStart, bytes32 niSize) = getDataLocations(nonIndexedArgs);
-
         assembly {
-            log1(niStart, niSize, eventHash)
+            log1(add(nonIndexedArgs, 0x20), mul(mload(nonIndexedArgs), 0x20), eventHash)
+        }
+    }
+
+    /// @dev non-anonymous + indexed(1) + no data
+    function emitEvent(EventHash eventHash, EventArgIndexed[1] memory indexedArgs) internal {
+        assembly {
+            log2(0x00, 0x00, eventHash, mload(indexedArgs))
         }
     }
 
@@ -69,17 +41,15 @@ library EventLib {
     )
         internal
     {
-        EventArgIndexed[] memory tmp;
-
         assembly {
-            mstore(tmp, 0x1)
-            mstore(add(tmp, 0x20), mload(indexedArgs))
+            log2(add(nonIndexedArgs, 0x20), mul(mload(nonIndexedArgs), 0x20), eventHash, mload(indexedArgs))
         }
+    }
 
-        (bytes32 iStart, bytes32 niStart, bytes32 niSize) = getDataLocations(tmp, nonIndexedArgs);
-
+    /// @dev non-anonymous + indexed(2) + no data
+    function emitEvent(EventHash eventHash, EventArgIndexed[2] memory indexedArgs) internal {
         assembly {
-            log2(niStart, niSize, eventHash, mload(iStart))
+            log3(0x00, 0x00, eventHash, mload(indexedArgs), mload(add(indexedArgs, 0x20)))
         }
     }
 
@@ -91,18 +61,23 @@ library EventLib {
     )
         internal
     {
-        EventArgIndexed[] memory tmp;
-
         assembly {
-            mstore(tmp, 0x1)
-            mstore(add(tmp, 0x20), mload(indexedArgs))
-            mstore(add(tmp, 0x40), mload(add(indexedArgs, 0x20)))
+            log3(
+                add(nonIndexedArgs, 0x20),
+                mul(mload(nonIndexedArgs), 0x20),
+                eventHash,
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20))
+            )
         }
+    }
 
-        (bytes32 iStart, bytes32 niStart, bytes32 niSize) = getDataLocations(tmp, nonIndexedArgs);
-
+    /// @dev non-anonymous + indexed(3) + no data
+    function emitEvent(EventHash eventHash, EventArgIndexed[3] memory indexedArgs) internal {
         assembly {
-            log3(niStart, niSize, eventHash, mload(iStart), mload(add(iStart, 0x20)))
+            log4(
+                0x00, 0x00, eventHash, mload(indexedArgs), mload(add(indexedArgs, 0x20)), mload(add(indexedArgs, 0x40))
+            )
         }
     }
 
@@ -114,19 +89,15 @@ library EventLib {
     )
         internal
     {
-        EventArgIndexed[] memory tmp;
-
         assembly {
-            mstore(tmp, 0x1)
-            mstore(add(tmp, 0x20), mload(indexedArgs))
-            mstore(add(tmp, 0x40), mload(add(indexedArgs, 0x20)))
-            mstore(add(tmp, 0x60), mload(add(indexedArgs, 0x40)))
-        }
-
-        (bytes32 iStart, bytes32 niStart, bytes32 niSize) = getDataLocations(tmp, nonIndexedArgs);
-
-        assembly {
-            log4(niStart, niSize, eventHash, mload(iStart), mload(add(iStart, 0x20)), mload(add(iStart, 0x40)))
+            log4(
+                add(nonIndexedArgs, 0x20),
+                mul(mload(nonIndexedArgs), 0x20),
+                eventHash,
+                mload(indexedArgs),
+                mload(add(indexedArgs, 0x20)),
+                mload(add(indexedArgs, 0x40))
+            )
         }
     }
 
