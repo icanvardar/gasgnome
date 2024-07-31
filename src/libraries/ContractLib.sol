@@ -13,9 +13,7 @@ using ContractLib for Contract global;
 /// `output size`)
 
 library ContractLib {
-    /// NOTE: Contract custom type may not be suitable for the case
-    /// that consists transfer to both contract and EOA.
-    /// @dev send ether to contract or EOA
+    /// @dev send ether to contract
     function call(Contract c, uint256 amount) public {
         assembly {
             let success := call(gas(), c, amount, 0x0, 0x0, 0x0, 0x0)
@@ -67,15 +65,18 @@ library ContractLib {
         uint8 outLen
     )
         internal
-        returns (bytes memory output)
+        returns (bytes32[] memory output)
     {
+        output = new bytes32[](outLen);
+
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, sig)
 
-            let success := call(gas(), c, amount, ptr, 0x04, output, mul(outLen, 0x20))
+            let outPtr := add(output, 0x20)
 
-            /// NOTE: Add custom error here - call reverted
+            let success := call(gas(), c, amount, ptr, 0x04, outPtr, mul(outLen, 0x20))
+
             if iszero(success) { revert(0x00, 0x00) }
         }
     }
@@ -89,13 +90,17 @@ library ContractLib {
         uint8 outLen
     )
         internal
-        returns (bytes memory output)
+        returns (bytes32[] memory output)
     {
+        output = new bytes32[](outLen);
+
         assembly {
             let inputLen := mload(input)
             let ptr := mload(0x40)
             mstore(ptr, sig)
             let nextPtr := add(ptr, 0x04)
+
+            let outPtr := add(output, 0x20)
 
             let i
             for { i := 0 } lt(i, inputLen) { i := add(i, 0x1) } {
@@ -103,9 +108,8 @@ library ContractLib {
                 mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
             }
 
-            let success := call(gas(), c, amount, ptr, add(0x04, mul(inputLen, 0x20)), output, mul(outLen, 0x20))
+            let success := call(gas(), c, amount, ptr, add(0x04, mul(inputLen, 0x20)), outPtr, mul(outLen, 0x20))
 
-            /// NOTE: Add custom error here - call reverted
             if iszero(success) { revert(0x00, 0x00) }
         }
     }
@@ -121,7 +125,7 @@ library ContractLib {
     }
 
     /// @dev call function + get return value
-    function call(Contract c, FunctionSignature sig, uint8 outLen) internal returns (bytes memory output) {
+    function call(Contract c, FunctionSignature sig, uint8 outLen) internal returns (bytes32[] memory output) {
         output = call(c, 0x0, sig, outLen);
     }
 
@@ -133,7 +137,7 @@ library ContractLib {
         uint8 outLen
     )
         internal
-        returns (bytes memory output)
+        returns (bytes32[] memory output)
     {
         output = call(c, 0x0, sig, input, outLen);
     }
