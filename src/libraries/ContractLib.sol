@@ -64,11 +64,21 @@ library ContractLib {
         Contract c,
         uint256 amount,
         FunctionSignature sig,
-        bool hasOutput
+        uint8 outLen
     )
         internal
         returns (bytes memory output)
-    { }
+    {
+        assembly {
+            let ptr := mload(0x40)
+            mstore(ptr, sig)
+
+            let success := call(gas(), c, amount, ptr, 0x04, output, mul(outLen, 0x20))
+
+            /// NOTE: Add custom error here - call reverted
+            if iszero(success) { revert(0x00, 0x00) }
+        }
+    }
 
     /// @dev send ether + call function + get return value + with input
     function call(
@@ -76,31 +86,57 @@ library ContractLib {
         uint256 amount,
         FunctionSignature sig,
         FunctionInput[] memory input,
-        bool hasOutput
+        uint8 outLen
     )
         internal
         returns (bytes memory output)
-    { }
+    {
+        assembly {
+            let inputLen := mload(input)
+            let ptr := mload(0x40)
+            mstore(ptr, sig)
+            let nextPtr := add(ptr, 0x04)
+
+            let i
+            for { i := 0 } lt(i, inputLen) { i := add(i, 0x1) } {
+                let multiplier := mul(i, 0x20)
+                mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
+            }
+
+            let success := call(gas(), c, amount, ptr, add(0x04, mul(inputLen, 0x20)), output, mul(outLen, 0x20))
+
+            /// NOTE: Add custom error here - call reverted
+            if iszero(success) { revert(0x00, 0x00) }
+        }
+    }
 
     /// @dev call function
-    function call(Contract c, FunctionSignature sig) internal { }
+    function call(Contract c, FunctionSignature sig) internal {
+        call(c, 0x0, sig);
+    }
 
     /// @dev call function + with input
-    function call(Contract c, FunctionSignature sig, FunctionInput[] memory input) internal { }
+    function call(Contract c, FunctionSignature sig, FunctionInput[] memory input) internal {
+        call(c, 0x0, sig, input);
+    }
 
     /// @dev call function + get return value
-    function call(Contract c, FunctionSignature sig, bool hasOutput) internal returns (bytes memory output) { }
+    function call(Contract c, FunctionSignature sig, uint8 outLen) internal returns (bytes memory output) {
+        output = call(c, 0x0, sig, outLen);
+    }
 
     /// @dev call function + get return value + with input
     function call(
         Contract c,
         FunctionSignature sig,
         FunctionInput[] memory input,
-        bool hasOutput
+        uint8 outLen
     )
         internal
         returns (bytes memory output)
-    { }
+    {
+        output = call(c, 0x0, sig, input, outLen);
+    }
 
     function balance(Contract c) public view returns (uint256 result) {
         assembly {
