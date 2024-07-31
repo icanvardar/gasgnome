@@ -12,7 +12,7 @@ type EventArgIndexed is bytes32;
 type EventArgNonIndexed is bytes32;
 
 library EventLib {
-    /// @dev non-anonymous + non-indexed + no data
+    /// @dev non-anonymous + no data
     function emitEvent(EventHash eventHash) internal {
         assembly {
             log1(0x00, 0x00, eventHash)
