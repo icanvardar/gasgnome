@@ -62,7 +62,15 @@ library ContractLib {
     }
 
     /// @dev send ether + call function + get return value
-    function call(Contract c, uint256 amount, FunctionSignature functionSig, bytes memory output) internal { }
+    function call(
+        Contract c,
+        uint256 amount,
+        FunctionSignature functionSig,
+        bool hasOutput
+    )
+        internal
+        returns (bytes memory output)
+    { }
 
     /// @dev send ether + call function + get return value + with input
     function call(
@@ -70,9 +78,10 @@ library ContractLib {
         uint256 amount,
         FunctionSignature functionSig,
         FunctionInput[] memory input,
-        bytes memory output
+        bool hasOutput
     )
         internal
+        returns (bytes memory output)
     { }
 
     /// @dev call function
@@ -82,16 +91,17 @@ library ContractLib {
     function call(Contract c, FunctionSignature functionSig, FunctionInput[] memory input) internal { }
 
     /// @dev call function + get return value
-    function call(Contract c, FunctionSignature functionSig, bytes memory output) internal { }
+    function call(Contract c, FunctionSignature functionSig, bool hasOutput) internal returns (bytes memory output) { }
 
     /// @dev call function + get return value + with input
     function call(
         Contract c,
         FunctionSignature functionSig,
         FunctionInput[] memory input,
-        bytes memory output
+        bool hasOutput
     )
         internal
+        returns (bytes memory output)
     { }
 
     function balance(Contract c) public view returns (uint256 result) {
