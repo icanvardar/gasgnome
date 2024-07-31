@@ -7,6 +7,7 @@ import { Test, console } from "forge-std/Test.sol";
 contract TestContract {
     uint256 public x;
     uint256 public y;
+    bytes32 public z;
 
     event ReceivedData(bytes data);
 
@@ -22,8 +23,9 @@ contract TestContract {
         x = x + 1;
     }
 
-    function d(uint256 incCount) public {
+    function d(uint256 incCount, bytes32 text) public {
         y += incCount;
+        z = text;
     }
 
     receive() external payable { }
@@ -40,7 +42,7 @@ contract ContractLibTest is Test {
     FunctionSignature internal functionASig = FunctionSignature.wrap(bytes4(keccak256("a()")));
     FunctionSignature internal functionBSig = FunctionSignature.wrap(bytes4(keccak256("b(uint256)")));
     FunctionSignature internal functionCSig = FunctionSignature.wrap(bytes4(keccak256("c()")));
-    FunctionSignature internal functionDSig = FunctionSignature.wrap(bytes4(keccak256("d(uint256)")));
+    FunctionSignature internal functionDSig = FunctionSignature.wrap(bytes4(keccak256("d(uint256,bytes32)")));
 
     uint256 internal sentAmount = 10 ether;
 
