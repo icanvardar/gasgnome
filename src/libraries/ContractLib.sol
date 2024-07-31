@@ -9,8 +9,6 @@ type FunctionInput is bytes32;
 
 using ContractLib for Contract global;
 
-import { console } from "forge-std/Test.sol";
-
 /// NOTE: call(`left gas`, `amount in wei`, `calldata input location`, `calldata size`, `location to save output`,
 /// `output size`)
 
@@ -65,7 +63,7 @@ library ContractLib {
     function call(
         Contract c,
         uint256 amount,
-        FunctionSignature functionSig,
+        FunctionSignature sig,
         bool hasOutput
     )
         internal
@@ -76,7 +74,7 @@ library ContractLib {
     function call(
         Contract c,
         uint256 amount,
-        FunctionSignature functionSig,
+        FunctionSignature sig,
         FunctionInput[] memory input,
         bool hasOutput
     )
@@ -85,18 +83,18 @@ library ContractLib {
     { }
 
     /// @dev call function
-    function call(Contract c, FunctionSignature functionSig) internal { }
+    function call(Contract c, FunctionSignature sig) internal { }
 
     /// @dev call function + with input
-    function call(Contract c, FunctionSignature functionSig, FunctionInput[] memory input) internal { }
+    function call(Contract c, FunctionSignature sig, FunctionInput[] memory input) internal { }
 
     /// @dev call function + get return value
-    function call(Contract c, FunctionSignature functionSig, bool hasOutput) internal returns (bytes memory output) { }
+    function call(Contract c, FunctionSignature sig, bool hasOutput) internal returns (bytes memory output) { }
 
     /// @dev call function + get return value + with input
     function call(
         Contract c,
-        FunctionSignature functionSig,
+        FunctionSignature sig,
         FunctionInput[] memory input,
         bool hasOutput
     )
