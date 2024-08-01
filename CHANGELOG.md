@@ -12,6 +12,8 @@ All notable changes to this project will be documented in this file.
 - *(EventLib)* Add untested library functions
 - *(EventLib)* Duplicate functions by their parameters
 - *(EventLib)* Add anonymous event emitters
+- *(ContractLib)* Add library functions
+- *(ContractLib)* Add missing function bodies
 
 ### 🐛 Bug Fixes
 
@@ -19,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - *(MemoryLib)* Fix `update` function bug
 - *(PointerLib)* Fix `update` function bug
 - *(EventLib)* Update anonymous emitters
+- *(ContractLib)* Remove redundant overwrite
 
 ### 🚜 Refactor
 
@@ -27,10 +30,16 @@ All notable changes to this project will be documented in this file.
 - *(MemoryLib)* Add custom error
 - Update maximum memory location
 - *(EventLib)* Remove `getDataLocations` function
+- *(ContractLib)* Update function parameters
+- *(ContractLib)* Update signature parameter name
+- *(ContractLib)* Partially broken code
+- *(ContractLib)* Add custom errors
+- *(ContractLib)* Add custom error
 
 ### 🎨 Styling
 
 - *(MemoryLib.t.sol)* Remove redundant lines
+- *(EventLib)* Update comment
 
 ### 🧪 Testing
 
@@ -42,6 +51,11 @@ All notable changes to this project will be documented in this file.
 - *(ErrorLib)* Update test cases
 - *(EventLib)* Add test cases
 - *(EventLib)* Update test cases
+- *(ContractLib)* Add test cases
+- *(ContractLib)* Update test storage values
+- *(ContactLib)* Finish positive cases
+- *(ContractLib)* Update test cases
+- *(ContractLib)* Update test cases
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -50,6 +64,8 @@ All notable changes to this project will be documented in this file.
 - Update foundry.toml
 - Update ci.yml
 - Update Gasgnome.sol
+- Update Gasgnome.sol
+- Update CHANGELOG.md
 - Update Gasgnome.sol
 
 ## [0.1.0] - 2024-07-28
