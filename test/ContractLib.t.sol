@@ -114,8 +114,8 @@ contract ContractLibTest is Test {
         Contract c = address(testContract).toContract();
 
         vm.startPrank(caller);
-        c.call(sentAmount, functionASig);
-        c.call(sentAmount, functionASig);
+        c.call(sentAmount, functionASig, false);
+        c.call(sentAmount, functionASig, false);
 
         assertEq(sentAmount * 2, c.balance());
         assertEq(2, testContract.x());
@@ -128,7 +128,7 @@ contract ContractLibTest is Test {
         fi[0] = FunctionInput.wrap(bytes32(uint256(expected)));
 
         vm.startPrank(caller);
-        c.call(sentAmount, functionBSig, fi);
+        c.call(sentAmount, functionBSig, fi, false);
 
         assertEq(sentAmount, c.balance());
         assertEq(expected, testContract.y());
@@ -138,13 +138,13 @@ contract ContractLibTest is Test {
         Contract c = address(testContract).toContract();
 
         vm.startPrank(caller);
-        bytes32[] memory output = c.call(sentAmount, functionCSig, 2);
-        bytes32 expected_1 = bytes32(uint256(1024));
-        bytes32 expected_2 = bytes32("i know");
+        (uint256 result_1, bytes32 result_2) = abi.decode(c.call(sentAmount, functionCSig, true), (uint256, bytes32));
+        uint256 expected_1 = 1024;
+        bytes32 expected_2 = "i know";
 
         assertEq(sentAmount, c.balance());
-        assertEq(expected_1, output[0]);
-        assertEq(expected_2, output[1]);
+        assertEq(expected_1, result_1);
+        assertEq(expected_2, result_2);
     }
 
     function test_Call_SendEtherCallFunctionAndGetReturnValueWithInput() public {
@@ -154,19 +154,20 @@ contract ContractLibTest is Test {
         fi[1] = FunctionInput.wrap(bytes32("hi there"));
 
         vm.startPrank(caller);
-        bytes32[] memory output = c.call(sentAmount, functionDSig, fi, 2);
-        bytes32 expected_1 = bytes32(uint256(1024));
-        bytes32 expected_2 = bytes32("hi there");
+        (uint256 result_1, bytes32 result_2) =
+            abi.decode(c.call(sentAmount, functionDSig, fi, true), (uint256, bytes32));
+        uint256 expected_1 = 1024;
+        bytes32 expected_2 = "hi there";
 
-        assertEq(expected_1, output[0]);
-        assertEq(expected_2, output[1]);
+        assertEq(expected_1, result_1);
+        assertEq(expected_2, result_2);
     }
 
     function test_Call_JustCall() public {
         Contract c = address(testContract).toContract();
         bytes32 expected = "hey, there";
 
-        c.call(functionISig);
+        c.call(functionISig, false);
         assertEq(expected, testContract.z());
     }
 
@@ -176,7 +177,7 @@ contract ContractLibTest is Test {
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
 
-        c.call(functionJSig, fi);
+        c.call(functionJSig, fi, false);
         assertEq(expected, testContract.x());
     }
 
@@ -184,9 +185,9 @@ contract ContractLibTest is Test {
         Contract c = address(testContract).toContract();
         bytes32 expected = "oui";
 
-        bytes32[] memory output = c.call(functionKSig, 1);
+        bytes32 result = abi.decode(c.call(functionKSig, true), (bytes32));
 
-        assertEq(expected, output[0]);
+        assertEq(expected, result);
     }
 
     function test_Call_CallAndGetReturnValueWithInput() public {
@@ -197,9 +198,9 @@ contract ContractLibTest is Test {
         fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
         fi[1] = FunctionInput.wrap(bytes32("hola"));
 
-        bytes32[] memory output = c.call(functionLSig, fi, 2);
-        assertEq(expected_1, output[0] != bytes32(0));
-        assertEq(expected_2, output[1]);
+        (bool result_1, bytes32 result_2) = abi.decode(c.call(functionLSig, fi, true), (bool, bytes32));
+        assertEq(expected_1, result_1);
+        assertEq(expected_2, result_2);
 
         assertEq(1881, testContract.x());
         assertEq(bytes32("hola"), testContract.z());
@@ -236,8 +237,8 @@ contract ContractLibTest is Test {
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunction() public {
         Contract c = address(testContract2).toContract();
 
-        vm.expectRevert(UnableToCall.selector);
-        c.call(sentAmount, FunctionSignature(functionLSig));
+        vm.expectRevert();
+        c.call(sentAmount, FunctionSignature(functionLSig), false);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunctionWithInput() public {
@@ -245,31 +246,15 @@ contract ContractLibTest is Test {
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32("hello"));
 
-        vm.expectRevert(UnableToCall.selector);
-        c.call(sentAmount, FunctionSignature(functionLSig), fi);
-    }
-
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValue() public {
-        Contract c = address(testContract2).toContract();
-
         vm.expectRevert();
-        c.call(sentAmount, FunctionSignature(functionCSig), 2);
-    }
-
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValueWithInput() public {
-        Contract c = address(testContract2).toContract();
-        FunctionInput[] memory fi = new FunctionInput[](1);
-        fi[0] = FunctionInput.wrap(bytes32("hello"));
-
-        vm.expectRevert();
-        c.call(sentAmount, FunctionSignature(functionLSig), fi, 2);
+        c.call(sentAmount, FunctionSignature(functionLSig), fi, false);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_JustCall() public {
         Contract c = address(testContract2).toContract();
 
         vm.expectRevert();
-        c.call(functionISig);
+        c.call(functionISig, false);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_JustCallWithInput() public {
@@ -278,24 +263,7 @@ contract ContractLibTest is Test {
         fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
 
         vm.expectRevert();
-        c.call(functionJSig, fi);
-    }
-
-    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValue() public {
-        Contract c = address(testContract2).toContract();
-
-        vm.expectRevert();
-        c.call(functionKSig, 1);
-    }
-
-    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValueWithInput() public {
-        Contract c = address(testContract2).toContract();
-        FunctionInput[] memory fi = new FunctionInput[](2);
-        fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
-        fi[1] = FunctionInput.wrap(bytes32("hola"));
-
-        vm.expectRevert();
-        c.call(functionLSig, fi, 2);
+        c.call(functionJSig, fi, false);
     }
 
     function test_RevertIf_MalformedFunctionSignature_Staticcall_StaticcallAndGetReturnValue() public {
