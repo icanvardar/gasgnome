@@ -185,7 +185,5 @@ library ContractLib {
             case 0x0 { result := 0x0 }
             default { result := 0x1 }
         }
-
-        result = true;
     }
 }
