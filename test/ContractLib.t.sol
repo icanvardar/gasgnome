@@ -47,6 +47,23 @@ contract TestContract {
         ctx = "this is result";
     }
 
+    function o(bool change) public pure returns (string memory result_1, uint256[] memory result_2) {
+        if (change == true) {
+            uint256[] memory tmp = new uint256[](3);
+            tmp[0] = 1;
+            tmp[1] = 2;
+            tmp[2] = 3;
+            result_2 = tmp;
+        } else {
+            uint256[] memory tmp = new uint256[](3);
+            tmp[0] = 11;
+            tmp[1] = 22;
+            tmp[2] = 33;
+            result_2 = tmp;
+        }
+        result_1 = "hello there";
+    }
+
     receive() external payable { }
 
     fallback() external payable { }
@@ -71,6 +88,7 @@ contract ContractLibTest is Test {
     FunctionSignature internal functionJSig = FunctionSignature.wrap(bytes4(keccak256("j(uint256)")));
     FunctionSignature internal functionKSig = FunctionSignature.wrap(bytes4(keccak256("k()")));
     FunctionSignature internal functionLSig = FunctionSignature.wrap(bytes4(keccak256("l(uint256,bytes32)")));
+    FunctionSignature internal functionOSig = FunctionSignature.wrap(bytes4(keccak256("o(bool)")));
 
     uint256 internal sentAmount = 10 ether;
 
@@ -187,6 +205,27 @@ contract ContractLibTest is Test {
         assertEq(bytes32("hola"), testContract.z());
     }
 
+    function test_Staticcall_StaticcallAndGetReturnValue() public view {
+        Contract c = address(testContract).toContract();
+
+        bytes32 result = abi.decode(c.staticcall(functionKSig), (bytes32));
+        assertEq(result, testContract.k());
+    }
+
+    function test_Staticcall_StaticcallAndGetReturnValueWithInput() public view {
+        Contract c = address(testContract).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32(uint256(1)));
+
+        (string memory result_1, uint256[] memory result_2) =
+            abi.decode(c.staticcall(functionOSig, fi), (string, uint256[]));
+
+        assertEq("hello there", result_1);
+        assertEq(1, result_2[0]);
+        assertEq(2, result_2[1]);
+        assertEq(3, result_2[2]);
+    }
+
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEther() public {
         Contract c = address(testContract2).toContract();
 
@@ -257,6 +296,22 @@ contract ContractLibTest is Test {
 
         vm.expectRevert();
         c.call(functionLSig, fi, 2);
+    }
+
+    function test_RevertIf_MalformedFunctionSignature_Staticcall_StaticcallAndGetReturnValue() public {
+        Contract c = address(testContract).toContract();
+
+        vm.expectRevert();
+        c.staticcall(functionOSig);
+    }
+
+    function test_RevertIf_MalformedFunctionSignature_Staticcall_StaticcallAndGetReturnValueWithInput() public {
+        Contract c = address(testContract).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32("wrong parameter"));
+
+        vm.expectRevert();
+        c.staticcall(functionOSig, fi);
     }
 
     function test_RevertWhen_AddressIsNotContract_ToContract() public {
