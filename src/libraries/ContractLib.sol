@@ -18,8 +18,11 @@ library ContractLib {
         assembly {
             let success := call(gas(), c, amount, 0x0, 0x0, 0x0, 0x0)
 
-            /// NOTE: Add custom error here - call reverted
-            if iszero(success) { revert(0x00, 0x00) }
+            if iszero(success) {
+                /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
+                mstore(0x80, 0x09108f6e)
+                revert(0x9c, 0x04)
+            }
         }
     }
 
@@ -31,8 +34,11 @@ library ContractLib {
 
             let success := call(gas(), c, amount, ptr, 0x04, 0x00, 0x00)
 
-            /// NOTE: Add custom error here - call reverted
-            if iszero(success) { revert(0x00, 0x00) }
+            if iszero(success) {
+                /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
+                mstore(0x80, 0x09108f6e)
+                revert(0x9c, 0x04)
+            }
         }
     }
 
@@ -52,8 +58,11 @@ library ContractLib {
 
             let success := call(gas(), c, amount, ptr, add(0x04, mul(inputLen, 0x20)), 0x00, 0x00)
 
-            /// NOTE: Add custom error here - call reverted
-            if iszero(success) { revert(0x00, 0x00) }
+            if iszero(success) {
+                /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
+                mstore(0x80, 0x09108f6e)
+                revert(0x9c, 0x04)
+            }
         }
     }
 
@@ -77,7 +86,11 @@ library ContractLib {
 
             let success := call(gas(), c, amount, ptr, 0x04, outPtr, mul(outLen, 0x20))
 
-            if iszero(success) { revert(0x00, 0x00) }
+            if iszero(success) {
+                /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
+                mstore(0x80, 0x09108f6e)
+                revert(0x9c, 0x04)
+            }
         }
     }
 
@@ -110,7 +123,11 @@ library ContractLib {
 
             let success := call(gas(), c, amount, ptr, add(0x04, mul(inputLen, 0x20)), outPtr, mul(outLen, 0x20))
 
-            if iszero(success) { revert(0x00, 0x00) }
+            if iszero(success) {
+                /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
+                mstore(0x80, 0x09108f6e)
+                revert(0x9c, 0x04)
+            }
         }
     }
 
