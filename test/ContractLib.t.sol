@@ -2,72 +2,9 @@
 pragma solidity 0.8.26;
 
 import { Contract, ContractLib, FunctionInput, FunctionSignature } from "../src/libraries/ContractLib.sol";
+
+import { ExternalFunctions } from "./mocks/ExternalFunctions.sol";
 import { Test, console } from "forge-std/Test.sol";
-
-contract TestContract {
-    uint256 public x;
-    uint256 public y;
-    bytes32 public z;
-
-    function a() public payable {
-        x = x + 1;
-    }
-
-    function b(uint256 incCount) public payable {
-        y += incCount;
-    }
-
-    function c() public payable returns (uint256 result_1, bytes32 result_2) {
-        result_1 = 1024;
-        result_2 = "i know";
-    }
-
-    function d(uint256 incCount, bytes32 text) public payable returns (uint256 result_1, bytes32 result_2) {
-        result_1 = incCount;
-        result_2 = text;
-    }
-
-    function i() public {
-        z = "hey, there";
-    }
-
-    function j(uint256 num) public {
-        x = num;
-    }
-
-    function k() public pure returns (bytes32 result) {
-        result = "oui";
-    }
-
-    function l(uint256 num, bytes32 text) public returns (bool result, bytes32 ctx) {
-        x = num;
-        z = text;
-
-        result = true;
-        ctx = "this is result";
-    }
-
-    function o(bool change) public pure returns (string memory result_1, uint256[] memory result_2) {
-        if (change == true) {
-            uint256[] memory tmp = new uint256[](3);
-            tmp[0] = 1;
-            tmp[1] = 2;
-            tmp[2] = 3;
-            result_2 = tmp;
-        } else {
-            uint256[] memory tmp = new uint256[](3);
-            tmp[0] = 11;
-            tmp[1] = 22;
-            tmp[2] = 33;
-            result_2 = tmp;
-        }
-        result_1 = "hello there";
-    }
-
-    receive() external payable { }
-
-    fallback() external payable { }
-}
 
 /// @dev This is a contract that has no receive function and it is for error reverts.
 contract TestContract2 { }
@@ -75,8 +12,8 @@ contract TestContract2 { }
 contract ContractLibTest is Test {
     using ContractLib for address;
 
-    TestContract internal testContract;
-    TestContract2 internal testContract2;
+    ExternalFunctions internal testContract;
+    address internal testContract2 = vm.randomAddress();
 
     address internal caller = address(1);
 
@@ -96,9 +33,9 @@ contract ContractLibTest is Test {
     error NotContract();
 
     function setUp() public {
-        testContract = new TestContract();
-        testContract2 = new TestContract2();
+        testContract = new ExternalFunctions();
         vm.deal(caller, 1_000_000 ether);
+        vm.etch(testContract2, hex"60806040525f80fdfea164736f6c634300081a000a");
     }
 
     function test_Call_SendEther() public {
