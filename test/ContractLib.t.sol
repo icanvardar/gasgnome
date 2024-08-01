@@ -52,10 +52,15 @@ contract TestContract {
     fallback() external payable { }
 }
 
+/// @dev This is a contract that has no receive function and it is for error reverts.
+contract TestContract2 { }
+
 contract ContractLibTest is Test {
     using ContractLib for address;
 
     TestContract internal testContract;
+    TestContract2 internal testContract2;
+
     address internal caller = address(1);
 
     FunctionSignature internal functionASig = FunctionSignature.wrap(bytes4(keccak256("a()")));
@@ -69,8 +74,11 @@ contract ContractLibTest is Test {
 
     uint256 internal sentAmount = 10 ether;
 
+    error UnableToCall();
+
     function setUp() public {
         testContract = new TestContract();
+        testContract2 = new TestContract2();
         vm.deal(caller, 1_000_000 ether);
     }
 
@@ -178,21 +186,75 @@ contract ContractLibTest is Test {
         assertEq(bytes32("hola"), testContract.z());
     }
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEther() public { }
+    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEther() public {
+        Contract c = address(testContract2).toContract();
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunction() public { }
+        vm.expectRevert(UnableToCall.selector);
+        c.call(sentAmount);
+    }
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunctionWithInput() public { }
+    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunction() public {
+        Contract c = address(testContract2).toContract();
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValue() public { }
+        vm.expectRevert(UnableToCall.selector);
+        c.call(sentAmount, FunctionSignature(functionLSig));
+    }
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValueWithInput() public { }
+    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunctionWithInput() public {
+        Contract c = address(testContract2).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32("hello"));
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_JustCall() public { }
+        vm.expectRevert(UnableToCall.selector);
+        c.call(sentAmount, FunctionSignature(functionLSig), fi);
+    }
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_JustCallWithInput() public { }
+    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValue() public {
+        Contract c = address(testContract2).toContract();
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValue() public { }
+        vm.expectRevert();
+        c.call(sentAmount, FunctionSignature(functionCSig), 2);
+    }
 
-    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValueWithInput() public { }
+    function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherCallFunctionAndGetReturnValueWithInput() public {
+        Contract c = address(testContract2).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32("hello"));
+
+        vm.expectRevert();
+        c.call(sentAmount, FunctionSignature(functionLSig), fi, 2);
+    }
+
+    function test_RevertWhen_NoReceiveFunctionFound_Call_JustCall() public {
+        Contract c = address(testContract2).toContract();
+
+        vm.expectRevert();
+        c.call(functionISig);
+    }
+
+    function test_RevertWhen_NoReceiveFunctionFound_Call_JustCallWithInput() public {
+        Contract c = address(testContract2).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
+
+        vm.expectRevert();
+        c.call(functionJSig, fi);
+    }
+
+    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValue() public {
+        Contract c = address(testContract2).toContract();
+
+        vm.expectRevert();
+        c.call(functionKSig, 1);
+    }
+
+    function test_RevertWhen_NoReceiveFunctionFound_Call_CallAndGetReturnValueWithInput() public {
+        Contract c = address(testContract2).toContract();
+        FunctionInput[] memory fi = new FunctionInput[](2);
+        fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
+        fi[1] = FunctionInput.wrap(bytes32("hola"));
+
+        vm.expectRevert();
+        c.call(functionLSig, fi, 2);
+    }
 }
