@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 - *(EventLib)* Add anonymous event emitters
 - *(ContractLib)* Add library functions
 - *(ContractLib)* Add missing function bodies
+- *(ContractLib)* Implement staticcall
+- *(ContractLib)* Implement delegatecall
 
 ### 🐛 Bug Fixes
 
@@ -35,6 +37,9 @@ All notable changes to this project will be documented in this file.
 - *(ContractLib)* Partially broken code
 - *(ContractLib)* Add custom errors
 - *(ContractLib)* Add custom error
+- *(ContractLib)* Merge call functions
+- Add mock contract
+- *(ContractLib.t.sol)* Implement mock contract
 
 ### 🎨 Styling
 
@@ -56,6 +61,8 @@ All notable changes to this project will be documented in this file.
 - *(ContactLib)* Finish positive cases
 - *(ContractLib)* Update test cases
 - *(ContractLib)* Update test cases
+- *(ContractLib)* Add staticcall test cases
+- *(ContractLib)* Test new call functions
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -67,6 +74,7 @@ All notable changes to this project will be documented in this file.
 - Update Gasgnome.sol
 - Update CHANGELOG.md
 - Update Gasgnome.sol
+- Update CHANGELOG.md
 
 ## [0.1.0] - 2024-07-28
 
