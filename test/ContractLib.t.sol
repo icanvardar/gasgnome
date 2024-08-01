@@ -75,6 +75,7 @@ contract ContractLibTest is Test {
     uint256 internal sentAmount = 10 ether;
 
     error UnableToCall();
+    error NotContract();
 
     function setUp() public {
         testContract = new TestContract();
@@ -256,5 +257,10 @@ contract ContractLibTest is Test {
 
         vm.expectRevert();
         c.call(functionLSig, fi, 2);
+    }
+
+    function test_RevertWhen_AddressIsNotContract_ToContract() public {
+        vm.expectRevert(NotContract.selector);
+        address(address(1)).toContract();
     }
 }
