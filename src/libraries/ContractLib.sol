@@ -171,8 +171,8 @@ library ContractLib {
         assembly {
             switch isCont
             case 0x0 {
-                /// NOTE: Add custom error here - address is not contract
-                revert(0x00, 0x00)
+                mstore(0x80, 0x6f7c43f1)
+                revert(0x9c, 0x04)
             }
             default { c := addr }
         }
