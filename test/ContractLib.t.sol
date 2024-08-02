@@ -259,6 +259,20 @@ contract ContractLibTest is Test {
         c.staticcall(functionOSig, fi);
     }
 
+    function test_RevertIf_MalformedFunctionSignature_DelegateCall_DelegatecallWrongFunctionSignatureWithoutInput()
+        public
+    {
+        vm.expectRevert(UnableToCall.selector);
+        contractLibProxy.delegatecallWrongFunctionSignatureWithoutInput();
+    }
+
+    function test_RevertIf_MalformedFunctionSignature_DelegateCall_DelegatecallWrongFunctionSignatureWithInput()
+        public
+    {
+        vm.expectRevert(UnableToCall.selector);
+        contractLibProxy.delegatecallWrongFunctionSignatureWithInput();
+    }
+
     function test_RevertWhen_AddressIsNotContract_ToContract() public {
         vm.expectRevert(NotContract.selector);
         address(address(1)).toContract();
