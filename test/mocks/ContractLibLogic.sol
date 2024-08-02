@@ -16,20 +16,20 @@ contract ContractLibLogic {
     function setNumberTwo() public returns (uint256 newValue) {
         assembly {
             newValue := 2048
-            sstore(numberTwoSlot.slot, 2048)
+            sstore(numberTwoSlot.slot, newValue)
         }
     }
 
     function setNumberThree(uint256 num) public {
         assembly {
-            sstore(numberTwoSlot.slot, num)
+            sstore(numberThreeSlot.slot, num)
         }
     }
 
     function setNumberFour(uint256 num) public returns (uint256 newValue) {
         assembly {
             newValue := num
-            sstore(numberTwoSlot.slot, newValue)
+            sstore(numberFourSlot.slot, newValue)
         }
     }
 }
