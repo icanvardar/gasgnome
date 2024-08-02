@@ -77,4 +77,20 @@ contract ContractLibProxy {
 
         result = c.delegatecall(fs, fi, true);
     }
+
+    function delegatecallWrongFunctionSignatureWithoutInput() public {
+        Contract c = getImplementationContract();
+        FunctionSignature fs = FunctionSignature.wrap(bytes4(keccak256("setNumberOneA()")));
+
+        c.delegatecall(fs, false);
+    }
+
+    function delegatecallWrongFunctionSignatureWithInput() public {
+        Contract c = getImplementationContract();
+        FunctionSignature fs = FunctionSignature.wrap(bytes4(keccak256("setNumberThreeA(uint256)")));
+        FunctionInput[] memory fi = new FunctionInput[](1);
+        fi[0] = FunctionInput.wrap(bytes32(uint256(4096)));
+
+        c.delegatecall(fs, fi, false);
+    }
 }
