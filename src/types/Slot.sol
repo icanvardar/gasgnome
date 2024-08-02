@@ -80,4 +80,105 @@ library SlotLib {
     function asString(Slot storage s) internal view returns (string memory result) {
         result = string(asBytes(s));
     }
+
+    /// NOTE: starting transient storage operations
+    type AddressSlot is bytes32;
+
+    function asAddressSlot(bytes32 slot) internal pure returns (AddressSlot result) {
+        assembly {
+            result := slot
+        }
+    }
+
+    function tstore(AddressSlot s, address val) internal {
+        assembly {
+            tstore(s, val)
+        }
+    }
+
+    function tload(AddressSlot s) internal view returns (address result) {
+        assembly {
+            result := tload(s)
+        }
+    }
+
+    type BooleanSlot is bytes32;
+
+    function asBooleanSlot(bytes32 slot) internal pure returns (BooleanSlot result) {
+        assembly {
+            result := slot
+        }
+    }
+
+    function tstore(BooleanSlot s, address val) internal {
+        assembly {
+            tstore(s, val)
+        }
+    }
+
+    function tload(BooleanSlot s) internal view returns (bool result) {
+        assembly {
+            result := tload(s)
+        }
+    }
+
+    type Bytes32Slot is bytes32;
+
+    function asBytes32Slot(bytes32 slot) internal pure returns (Bytes32Slot result) {
+        assembly {
+            result := slot
+        }
+    }
+
+    function tstore(Bytes32Slot s, bytes32 val) internal {
+        assembly {
+            tstore(s, val)
+        }
+    }
+
+    function tload(Bytes32Slot s) internal view returns (bytes32 result) {
+        assembly {
+            result := tload(s)
+        }
+    }
+
+    type Int256Slot is bytes32;
+
+    function asInt256Slot(bytes32 slot) internal pure returns (Int256Slot result) {
+        assembly {
+            result := slot
+        }
+    }
+
+    function tstore(Int256Slot s, int256 val) internal {
+        assembly {
+            tstore(s, val)
+        }
+    }
+
+    function tload(Int256Slot s) internal view returns (int256 result) {
+        assembly {
+            result := tload(s)
+        }
+    }
+
+    type Uint256Slot is bytes32;
+
+    function asUint256Slot(bytes32 slot) internal pure returns (Uint256Slot result) {
+        assembly {
+            result := slot
+        }
+    }
+
+    function tstore(Uint256Slot s, uint256 val) internal {
+        assembly {
+            tstore(s, val)
+        }
+    }
+
+    function tload(Uint256Slot s) internal view returns (uint256 result) {
+        assembly {
+            result := tload(s)
+        }
+    }
 }
