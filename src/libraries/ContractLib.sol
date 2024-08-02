@@ -186,20 +186,12 @@ library ContractLib {
     }
 
     /// delegatecall function + get return value
-    function delegatecall(
-        Contract c,
-        FunctionSignature sig,
-        bool hasOutput
-    )
-        internal
-        view
-        returns (bytes memory result)
-    {
+    function delegatecall(Contract c, FunctionSignature sig, bool hasOutput) internal returns (bytes memory result) {
         assembly {
             let ptr := mload(0x40)
             mstore(ptr, sig)
 
-            let success := staticcall(gas(), c, ptr, 0x04, 0x00, 0x00)
+            let success := delegatecall(gas(), c, ptr, 0x04, 0x00, 0x00)
 
             if iszero(success) {
                 /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
@@ -226,7 +218,6 @@ library ContractLib {
         bool hasOutput
     )
         internal
-        view
         returns (bytes memory result)
     {
         assembly {
@@ -241,7 +232,7 @@ library ContractLib {
                 mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
             }
 
-            let success := staticcall(gas(), c, ptr, add(0x04, mul(inputLen, 0x20)), 0x00, 0x00)
+            let success := delegatecall(gas(), c, ptr, add(0x04, mul(inputLen, 0x20)), 0x00, 0x00)
 
             if iszero(success) {
                 /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e

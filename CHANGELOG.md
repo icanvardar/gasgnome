@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 - *(PointerLib)* Fix `update` function bug
 - *(EventLib)* Update anonymous emitters
 - *(ContractLib)* Remove redundant overwrite
+- *(ContractLibLogic)* Update wrong slots
+- *(ContractLib)* Update staticcall to delegatecall
 
 ### 🚜 Refactor
 
@@ -63,6 +65,9 @@ All notable changes to this project will be documented in this file.
 - *(ContractLib)* Update test cases
 - *(ContractLib)* Add staticcall test cases
 - *(ContractLib)* Test new call functions
+- *(ContractLib)* Add mock proxy and logic
+- *(ContractLib)* Add delegatecall test cases
+- *(ContractLib)* Add revert cases of delegatecall
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -75,6 +80,9 @@ All notable changes to this project will be documented in this file.
 - Update CHANGELOG.md
 - Update Gasgnome.sol
 - Update CHANGELOG.md
+- Update CHANGELOG.md
+- *(ContractLibProxy)* Add logic slots
+- *(ContractLibProxy)* Add delegatecall with wrong function signature
 
 ## [0.1.0] - 2024-07-28
 

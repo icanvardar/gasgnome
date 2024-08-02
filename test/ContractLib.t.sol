@@ -3,16 +3,18 @@ pragma solidity 0.8.26;
 
 import { Contract, ContractLib, FunctionInput, FunctionSignature } from "../src/libraries/ContractLib.sol";
 
+import { ContractLibLogic } from "./mocks/ContractLibLogic.sol";
+import { ContractLibProxy } from "./mocks/ContractLibProxy.sol";
 import { ExternalFunctions } from "./mocks/ExternalFunctions.sol";
-import { Test, console } from "forge-std/Test.sol";
 
-/// @dev This is a contract that has no receive function and it is for error reverts.
-contract TestContract2 { }
+import { Test, console } from "forge-std/Test.sol";
 
 contract ContractLibTest is Test {
     using ContractLib for address;
 
     ExternalFunctions internal testContract;
+    ContractLibProxy internal contractLibProxy;
+    ContractLibLogic internal contractLibLogic;
     address internal testContract2 = vm.randomAddress();
 
     address internal caller = address(1);
@@ -34,6 +36,8 @@ contract ContractLibTest is Test {
 
     function setUp() public {
         testContract = new ExternalFunctions();
+        contractLibLogic = new ContractLibLogic();
+        contractLibProxy = new ContractLibProxy(address(contractLibLogic));
         vm.deal(caller, 1_000_000 ether);
         vm.etch(testContract2, hex"60806040525f80fdfea164736f6c634300081a000a");
     }
@@ -164,6 +168,42 @@ contract ContractLibTest is Test {
         assertEq(3, result_2[2]);
     }
 
+    function test_Delegatecall_WithoutInputAndWithoutReturnValue() public {
+        contractLibProxy.delegatecallWithoutInputAndWithoutReturnValue();
+
+        uint256 expected = 1024;
+        uint256 numberOne = contractLibProxy.getNumberOne();
+
+        assertEq(expected, numberOne);
+    }
+
+    function test_Delegatecall_WithoutInputAndWithReturnValue() public {
+        contractLibProxy.delegatecallWithoutInputAndWithReturnValue();
+
+        uint256 expected = 2048;
+        uint256 numberTwo = contractLibProxy.getNumberTwo();
+
+        assertEq(expected, numberTwo);
+    }
+
+    function test_Delegatecall_WithInputAndWithoutReturnValue() public {
+        contractLibProxy.delegatecallWithInputAndWithoutReturnValue();
+
+        uint256 expected = 4096;
+        uint256 numberThree = contractLibProxy.getNumberThree();
+
+        assertEq(expected, numberThree);
+    }
+
+    function test_Delegatecall_WithInputAndWithReturnValue() public {
+        contractLibProxy.delegatecallWithInputAndWithReturnValue();
+
+        uint256 expected = 8192;
+        uint256 numberFour = contractLibProxy.getNumberFour();
+
+        assertEq(expected, numberFour);
+    }
+
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEther() public {
         Contract c = address(testContract2).toContract();
 
@@ -217,6 +257,20 @@ contract ContractLibTest is Test {
 
         vm.expectRevert();
         c.staticcall(functionOSig, fi);
+    }
+
+    function test_RevertIf_MalformedFunctionSignature_DelegateCall_DelegatecallWrongFunctionSignatureWithoutInput()
+        public
+    {
+        vm.expectRevert(UnableToCall.selector);
+        contractLibProxy.delegatecallWrongFunctionSignatureWithoutInput();
+    }
+
+    function test_RevertIf_MalformedFunctionSignature_DelegateCall_DelegatecallWrongFunctionSignatureWithInput()
+        public
+    {
+        vm.expectRevert(UnableToCall.selector);
+        contractLibProxy.delegatecallWrongFunctionSignatureWithInput();
     }
 
     function test_RevertWhen_AddressIsNotContract_ToContract() public {
