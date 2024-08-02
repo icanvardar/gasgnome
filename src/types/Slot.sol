@@ -110,7 +110,7 @@ library SlotLib {
         }
     }
 
-    function tstore(BooleanSlot s, address val) internal {
+    function tstore(BooleanSlot s, bool val) internal {
         assembly {
             tstore(s, val)
         }
