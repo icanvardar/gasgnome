@@ -7,7 +7,7 @@
  auto_detect_solc = false
  block_timestamp = 1_680_220_800
  bytecode_hash = "none"
- evm_version = "shanghai"
+ evm_version = "cancun"
  fs_permissions = [{ access = "read-write", path = "./" }]
  memory_limit = 268435456
  optimizer = true
