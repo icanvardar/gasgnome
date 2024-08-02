@@ -6,6 +6,45 @@ All notable changes to this project will be documented in this file.
 
 ### 🚀 Features
 
+- *(ContractLib)* Implement staticcall
+- *(ContractLib)* Implement delegatecall
+- *(Slot)* Add transient storage operations
+
+### 🐛 Bug Fixes
+
+- *(ContractLibLogic)* Update wrong slots
+- *(ContractLib)* Update staticcall to delegatecall
+- *(Slot)* Update wrong parameter type
+
+### 🚜 Refactor
+
+- *(ContractLib)* Merge call functions
+- Add mock contract
+- *(ContractLib.t.sol)* Implement mock contract
+
+### 🧪 Testing
+
+- *(ContractLib)* Add staticcall test cases
+- *(ContractLib)* Test new call functions
+- *(ContractLib)* Add mock proxy and logic
+- *(ContractLib)* Add delegatecall test cases
+- *(ContractLib)* Add revert cases of delegatecall
+- Create Variables.sol mock contract
+- *(SlotLib)* Import Variables mock contract
+- *(SlotLib)* Add transient storage test cases
+
+### ⚙️ Miscellaneous Tasks
+
+- Update CHANGELOG.md
+- *(ContractLibProxy)* Add logic slots
+- *(ContractLibProxy)* Add delegatecall with wrong function signature
+- Update CHANGELOG.md
+- Update foundry.toml
+
+## [0.2.0] - 2024-08-01
+
+### 🚀 Features
+
 - *(MemoryLib)* Add functions
 - *(Pointer)* Add custom type and its functions
 - *(ErrorLib)* Add library functions
@@ -14,8 +53,6 @@ All notable changes to this project will be documented in this file.
 - *(EventLib)* Add anonymous event emitters
 - *(ContractLib)* Add library functions
 - *(ContractLib)* Add missing function bodies
-- *(ContractLib)* Implement staticcall
-- *(ContractLib)* Implement delegatecall
 
 ### 🐛 Bug Fixes
 
@@ -24,8 +61,6 @@ All notable changes to this project will be documented in this file.
 - *(PointerLib)* Fix `update` function bug
 - *(EventLib)* Update anonymous emitters
 - *(ContractLib)* Remove redundant overwrite
-- *(ContractLibLogic)* Update wrong slots
-- *(ContractLib)* Update staticcall to delegatecall
 
 ### 🚜 Refactor
 
@@ -39,9 +74,6 @@ All notable changes to this project will be documented in this file.
 - *(ContractLib)* Partially broken code
 - *(ContractLib)* Add custom errors
 - *(ContractLib)* Add custom error
-- *(ContractLib)* Merge call functions
-- Add mock contract
-- *(ContractLib.t.sol)* Implement mock contract
 
 ### 🎨 Styling
 
@@ -63,11 +95,6 @@ All notable changes to this project will be documented in this file.
 - *(ContactLib)* Finish positive cases
 - *(ContractLib)* Update test cases
 - *(ContractLib)* Update test cases
-- *(ContractLib)* Add staticcall test cases
-- *(ContractLib)* Test new call functions
-- *(ContractLib)* Add mock proxy and logic
-- *(ContractLib)* Add delegatecall test cases
-- *(ContractLib)* Add revert cases of delegatecall
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -80,9 +107,6 @@ All notable changes to this project will be documented in this file.
 - Update CHANGELOG.md
 - Update Gasgnome.sol
 - Update CHANGELOG.md
-- Update CHANGELOG.md
-- *(ContractLibProxy)* Add logic slots
-- *(ContractLibProxy)* Add delegatecall with wrong function signature
 
 ## [0.1.0] - 2024-07-28
 
