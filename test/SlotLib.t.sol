@@ -76,4 +76,174 @@ contract SlotLibTest is Variables, Test {
 
         assertEq(result, expected);
     }
+
+    function test_AsAddressSlot() public pure {
+        bytes32 addressSlot = bytes32("addressSlot");
+
+        SlotLib.AddressSlot result = SlotLib.asAddressSlot(addressSlot);
+
+        assertEq(SlotLib.AddressSlot.unwrap(result), addressSlot);
+    }
+
+    function test_Tstore_AddressSlot() public {
+        bytes32 addressSlot = bytes32("addressSlot");
+        address expected = address(1);
+
+        SlotLib.tstore(SlotLib.AddressSlot.wrap(addressSlot), expected);
+
+        address result;
+        assembly {
+            result := tload(addressSlot)
+        }
+
+        assertEq(expected, result);
+    }
+
+    function test_TLoad_AddressSlot() public {
+        bytes32 addressSlot = bytes32("addressSlot");
+        SlotLib.AddressSlot slot = SlotLib.asAddressSlot(addressSlot);
+        address expected = address(1);
+
+        SlotLib.tstore(slot, expected);
+
+        address result = SlotLib.tload(slot);
+
+        assertEq(expected, result);
+    }
+
+    function test_AsBooleanSlot() public pure {
+        bytes32 booleanSlot = bytes32("booleanSlot");
+
+        SlotLib.BooleanSlot result = SlotLib.asBooleanSlot(booleanSlot);
+
+        assertEq(SlotLib.BooleanSlot.unwrap(result), booleanSlot);
+    }
+
+    function test_Tstore_BooleanSlot() public {
+        bytes32 booleanSlot = bytes32("booleanSlot");
+        bool expected = true;
+
+        SlotLib.tstore(SlotLib.BooleanSlot.wrap(booleanSlot), expected);
+
+        bool result;
+        assembly {
+            result := tload(booleanSlot)
+        }
+
+        assertEq(expected, result);
+    }
+
+    function test_TLoad_BooleanSlot() public {
+        bytes32 booleanSlot = bytes32("booleanSlot");
+        SlotLib.BooleanSlot slot = SlotLib.asBooleanSlot(booleanSlot);
+        bool expected = true;
+
+        SlotLib.tstore(slot, expected);
+
+        bool result = SlotLib.tload(slot);
+
+        assertEq(expected, result);
+    }
+
+    function test_AsBytes32Slot() public pure {
+        bytes32 bytes32Slot = bytes32("bytes32Slot");
+
+        SlotLib.Bytes32Slot result = SlotLib.asBytes32Slot(bytes32Slot);
+
+        assertEq(SlotLib.Bytes32Slot.unwrap(result), bytes32Slot);
+    }
+
+    function test_Tstore_Bytes32Slot() public {
+        bytes32 bytes32Slot = bytes32("bytes32Slot");
+        bytes32 expected = "test";
+
+        SlotLib.tstore(SlotLib.Bytes32Slot.wrap(bytes32Slot), expected);
+
+        bytes32 result;
+        assembly {
+            result := tload(bytes32Slot)
+        }
+
+        assertEq(expected, result);
+    }
+
+    function test_TLoad_Bytes32Slot() public {
+        bytes32 bytes32Slot = bytes32("bytes32Slot");
+        SlotLib.Bytes32Slot slot = SlotLib.asBytes32Slot(bytes32Slot);
+        bytes32 expected = "test";
+
+        SlotLib.tstore(slot, expected);
+
+        bytes32 result = SlotLib.tload(slot);
+
+        assertEq(expected, result);
+    }
+
+    function test_AsInt256Slot() public pure {
+        bytes32 int256Slot = bytes32("int256Slot");
+
+        SlotLib.Int256Slot result = SlotLib.asInt256Slot(int256Slot);
+
+        assertEq(SlotLib.Int256Slot.unwrap(result), int256Slot);
+    }
+
+    function test_Tstore_Int256Slot() public {
+        bytes32 int256Slot = bytes32("int256Slot");
+        int256 expected = -32;
+
+        SlotLib.tstore(SlotLib.Int256Slot.wrap(int256Slot), expected);
+
+        int256 result;
+        assembly {
+            result := tload(int256Slot)
+        }
+
+        assertEq(expected, result);
+    }
+
+    function test_TLoad_Int256Slot() public {
+        bytes32 int256Slot = bytes32("int256Slot");
+        SlotLib.Int256Slot slot = SlotLib.asInt256Slot(int256Slot);
+        int256 expected = -32;
+
+        SlotLib.tstore(slot, expected);
+
+        int256 result = SlotLib.tload(slot);
+
+        assertEq(expected, result);
+    }
+
+    function test_AsUint256Slot() public pure {
+        bytes32 uint256Slot = bytes32("uint256Slot");
+
+        SlotLib.Uint256Slot result = SlotLib.asUint256Slot(uint256Slot);
+
+        assertEq(SlotLib.Uint256Slot.unwrap(result), uint256Slot);
+    }
+
+    function test_Tstore_Uint256Slot() public {
+        bytes32 uint256Slot = bytes32("uint256Slot");
+        uint256 expected = 32;
+
+        SlotLib.tstore(SlotLib.Uint256Slot.wrap(uint256Slot), expected);
+
+        uint256 result;
+        assembly {
+            result := tload(uint256Slot)
+        }
+
+        assertEq(expected, result);
+    }
+
+    function test_TLoad_Uint256Slot() public {
+        bytes32 uint256Slot = bytes32("uint256Slot");
+        SlotLib.Uint256Slot slot = SlotLib.asUint256Slot(uint256Slot);
+        uint256 expected = 32;
+
+        SlotLib.tstore(slot, expected);
+
+        uint256 result = SlotLib.tload(slot);
+
+        assertEq(expected, result);
+    }
 }
