@@ -2,9 +2,9 @@
 pragma solidity 0.8.26;
 
 import { EventArgIndexed, EventArgNonIndexed, EventHash, EventLib } from "../src/libraries/EventLib.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract EventLibTest is Test {
+contract EventLibTest is Base_Test {
     /// @dev NonAnonymous events
     event NonAnonymousNonIndexedNoData();
     event NonAnonymousNonIndexed(uint256, bytes32);

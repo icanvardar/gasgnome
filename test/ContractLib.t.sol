@@ -3,21 +3,10 @@ pragma solidity 0.8.26;
 
 import { Contract, ContractLib, FunctionInput, FunctionSignature } from "../src/libraries/ContractLib.sol";
 
-import { ContractLibLogic } from "./mocks/ContractLibLogic.sol";
-import { ContractLibProxy } from "./mocks/ContractLibProxy.sol";
-import { ExternalFunctions } from "./mocks/ExternalFunctions.sol";
+import { Base_Test } from "./Base.t.sol";
 
-import { Test, console } from "forge-std/Test.sol";
-
-contract ContractLibTest is Test {
+contract ContractLibTest is Base_Test {
     using ContractLib for address;
-
-    ExternalFunctions internal testContract;
-    ContractLibProxy internal contractLibProxy;
-    ContractLibLogic internal contractLibLogic;
-    address internal testContract2 = vm.randomAddress();
-
-    address internal caller = address(1);
 
     FunctionSignature internal functionASig = FunctionSignature.wrap(bytes4(keccak256("a()")));
     FunctionSignature internal functionBSig = FunctionSignature.wrap(bytes4(keccak256("b(uint256)")));
@@ -34,51 +23,43 @@ contract ContractLibTest is Test {
     error UnableToCall();
     error NotContract();
 
-    function setUp() public {
-        testContract = new ExternalFunctions();
-        contractLibLogic = new ContractLibLogic();
-        contractLibProxy = new ContractLibProxy(address(contractLibLogic));
-        vm.deal(caller, 1_000_000 ether);
-        vm.etch(testContract2, hex"60806040525f80fdfea164736f6c634300081a000a");
-    }
-
     function test_Call_SendEther() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
 
-        vm.prank(caller);
+        vm.prank(accounts.caller);
         c.call(sentAmount);
 
         assertEq(sentAmount, c.balance());
     }
 
     function test_Call_SendEtherAndCallFunction() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
 
-        vm.startPrank(caller);
+        vm.startPrank(accounts.caller);
         c.call(sentAmount, functionASig, false);
         c.call(sentAmount, functionASig, false);
 
         assertEq(sentAmount * 2, c.balance());
-        assertEq(2, testContract.x());
+        assertEq(2, externalFunctions.x());
     }
 
     function test_Call_SendEtherAndCallFunctionWithInput() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         uint256 expected = 3;
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32(uint256(expected)));
 
-        vm.startPrank(caller);
+        vm.startPrank(accounts.caller);
         c.call(sentAmount, functionBSig, fi, false);
 
         assertEq(sentAmount, c.balance());
-        assertEq(expected, testContract.y());
+        assertEq(expected, externalFunctions.y());
     }
 
     function test_Call_SendEtherCallFunctionAndGetReturnValue() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
 
-        vm.startPrank(caller);
+        vm.startPrank(accounts.caller);
         (uint256 result_1, bytes32 result_2) = abi.decode(c.call(sentAmount, functionCSig, true), (uint256, bytes32));
         uint256 expected_1 = 1024;
         bytes32 expected_2 = "i know";
@@ -89,12 +70,12 @@ contract ContractLibTest is Test {
     }
 
     function test_Call_SendEtherCallFunctionAndGetReturnValueWithInput() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         FunctionInput[] memory fi = new FunctionInput[](2);
         fi[0] = FunctionInput.wrap(bytes32(uint256(1024)));
         fi[1] = FunctionInput.wrap(bytes32("hi there"));
 
-        vm.startPrank(caller);
+        vm.startPrank(accounts.caller);
         (uint256 result_1, bytes32 result_2) =
             abi.decode(c.call(sentAmount, functionDSig, fi, true), (uint256, bytes32));
         uint256 expected_1 = 1024;
@@ -105,25 +86,25 @@ contract ContractLibTest is Test {
     }
 
     function test_Call_JustCall() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         bytes32 expected = "hey, there";
 
         c.call(functionISig, false);
-        assertEq(expected, testContract.z());
+        assertEq(expected, externalFunctions.z());
     }
 
     function test_Call_JustCallWithInput() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         uint256 expected = 1881;
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
 
         c.call(functionJSig, fi, false);
-        assertEq(expected, testContract.x());
+        assertEq(expected, externalFunctions.x());
     }
 
     function test_Call_CallAndGetReturnValue() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         bytes32 expected = "oui";
 
         bytes32 result = abi.decode(c.call(functionKSig, true), (bytes32));
@@ -132,7 +113,7 @@ contract ContractLibTest is Test {
     }
 
     function test_Call_CallAndGetReturnValueWithInput() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         bool expected_1 = true;
         bytes32 expected_2 = "this is result";
         FunctionInput[] memory fi = new FunctionInput[](2);
@@ -143,19 +124,19 @@ contract ContractLibTest is Test {
         assertEq(expected_1, result_1);
         assertEq(expected_2, result_2);
 
-        assertEq(1881, testContract.x());
-        assertEq(bytes32("hola"), testContract.z());
+        assertEq(1881, externalFunctions.x());
+        assertEq(bytes32("hola"), externalFunctions.z());
     }
 
     function test_Staticcall_StaticcallAndGetReturnValue() public view {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
 
         bytes32 result = abi.decode(c.staticcall(functionKSig), (bytes32));
-        assertEq(result, testContract.k());
+        assertEq(result, externalFunctions.k());
     }
 
     function test_Staticcall_StaticcallAndGetReturnValueWithInput() public view {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32(uint256(1)));
 
@@ -205,21 +186,21 @@ contract ContractLibTest is Test {
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEther() public {
-        Contract c = address(testContract2).toContract();
+        Contract c = emptyContract.toContract();
 
         vm.expectRevert(UnableToCall.selector);
         c.call(sentAmount);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunction() public {
-        Contract c = address(testContract2).toContract();
+        Contract c = emptyContract.toContract();
 
         vm.expectRevert();
         c.call(sentAmount, FunctionSignature(functionLSig), false);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_SendEtherAndCallFunctionWithInput() public {
-        Contract c = address(testContract2).toContract();
+        Contract c = emptyContract.toContract();
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32("hello"));
 
@@ -228,14 +209,14 @@ contract ContractLibTest is Test {
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_JustCall() public {
-        Contract c = address(testContract2).toContract();
+        Contract c = emptyContract.toContract();
 
         vm.expectRevert();
         c.call(functionISig, false);
     }
 
     function test_RevertWhen_NoReceiveFunctionFound_Call_JustCallWithInput() public {
-        Contract c = address(testContract2).toContract();
+        Contract c = emptyContract.toContract();
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32(uint256(1881)));
 
@@ -244,14 +225,14 @@ contract ContractLibTest is Test {
     }
 
     function test_RevertIf_MalformedFunctionSignature_Staticcall_StaticcallAndGetReturnValue() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
 
         vm.expectRevert();
         c.staticcall(functionOSig);
     }
 
     function test_RevertIf_MalformedFunctionSignature_Staticcall_StaticcallAndGetReturnValueWithInput() public {
-        Contract c = address(testContract).toContract();
+        Contract c = address(externalFunctions).toContract();
         FunctionInput[] memory fi = new FunctionInput[](1);
         fi[0] = FunctionInput.wrap(bytes32("wrong parameter"));
 

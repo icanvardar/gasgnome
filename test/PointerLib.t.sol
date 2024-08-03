@@ -2,9 +2,9 @@
 pragma solidity 0.8.26;
 
 import { Pointer, PointerLib } from "../src/types/Pointer.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract PointerLibTest is Test {
+contract PointerLibTest is Base_Test {
     error ImmutableVariable();
 
     function test_Load() public pure {
