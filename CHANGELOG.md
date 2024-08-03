@@ -60,6 +60,8 @@ All notable changes to this project will be documented in this file.
 - Add soldeer package url
 - Update CHANGELOG.md
 - Update remappings.txt
+- Update CHANGELOG.md
+- Update installation section in docs
 
 ## [0.2.0] - 2024-08-01
 
