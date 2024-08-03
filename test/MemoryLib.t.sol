@@ -2,9 +2,9 @@
 pragma solidity 0.8.26;
 
 import { MemoryLib } from "../src/libraries/MemoryLib.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract MemoryLibTest is Test {
+contract MemoryLibTest is Base_Test {
     error ImmutableVariable();
 
     function test_FreeMemory() public pure {

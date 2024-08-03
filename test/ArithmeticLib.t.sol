@@ -2,12 +2,12 @@
 pragma solidity 0.8.26;
 
 import { ArithmeticLib } from "../src/libraries/ArithmeticLib.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
 import { SignedInt, SignedIntLib } from "../src/types/SignedInt.sol";
 import { UnsignedInt, UnsignedIntLib } from "../src/types/UnsignedInt.sol";
 
-contract ArithmeticLibTest is Test {
+contract ArithmeticLibTest is Base_Test {
     error CannotBeZero(uint256);
     error ExceedsTheBound(uint256);
     error MustBeAMultipleOfEight(uint256);

@@ -3,9 +3,9 @@ pragma solidity 0.8.26;
 
 import { StorageLib } from "../src/libraries/StorageLib.sol";
 import { Slot, SlotLib } from "../src/types/Slot.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract StorageLibTest is Test {
+contract StorageLibTest is Base_Test {
     address public addressSlot = address(123);
     int256 public int256Slot = -123;
     uint256 public uint256Slot = 123;

@@ -2,9 +2,9 @@
 pragma solidity 0.8.26;
 
 import { ErrorArg, ErrorLib, ErrorSelector } from "../src/libraries/ErrorLib.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract ErrorLibTest is Test {
+contract ErrorLibTest is Base_Test {
     error Test_1();
     error Test_2(uint256, uint256, bytes32);
     error FunkyTown();

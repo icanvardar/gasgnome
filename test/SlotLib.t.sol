@@ -4,74 +4,67 @@ pragma solidity 0.8.26;
 import { StorageLib } from "../src/libraries/StorageLib.sol";
 import { Slot, SlotLib } from "../src/types/Slot.sol";
 
-import { Variables } from "../test/mocks/Variables.sol";
-import { Test, console } from "forge-std/Test.sol";
+import { Base_Test } from "./Base.t.sol";
 
-contract SlotLibTest is Variables, Test {
-    Variables.Slots internal s;
-
-    function setUp() public {
-        s = getSlots();
-    }
-
+contract SlotLibTest is Base_Test {
     function test_AsAddress() public view {
-        address result = StorageLib.getSlot(s.addr).asAddress();
+        address result = StorageLib.getSlot(slots.addr).asAddress();
         address expected = addr;
 
         assertEq(result, expected);
     }
 
     function test_AsBoolean() public view {
-        bool result = StorageLib.getSlot(s.boolean).asBoolean();
+        bool result = StorageLib.getSlot(slots.boolean).asBoolean();
         bool expected = boolean;
 
         assertEq(result, expected);
     }
 
     function test_AsBytes32() public view {
-        bytes32 result = StorageLib.getSlot(s.bytes32Example).asBytes32();
+        bytes32 result = StorageLib.getSlot(slots.bytes32Example).asBytes32();
         bytes32 expected = bytes32Example;
 
         assertEq(result, expected);
     }
 
     function test_AsInt256() public view {
-        int256 result = StorageLib.getSlot(s.int256Example).asInt256();
+        int256 result = StorageLib.getSlot(slots.int256Example).asInt256();
         int256 expected = int256Example;
 
         assertEq(result, expected);
     }
 
     function test_AsUint256() public view {
-        uint256 result = StorageLib.getSlot(s.uint256Example).asUint256();
+        uint256 result = StorageLib.getSlot(slots.uint256Example).asUint256();
         uint256 expected = uint256Example;
 
         assertEq(result, expected);
     }
 
     function test_AsString_LessThen32Bytes() public view {
-        string memory result = StorageLib.getSlot(s.shortString).asString();
+        string memory result = StorageLib.getSlot(slots.shortString).asString();
         string memory expected = shortString;
 
         assertEq(result, expected);
     }
 
     function test_AsString_BiggerThen31Bytes() public view {
-        string memory result = StorageLib.getSlot(s.longString).asString();
+        string memory result = StorageLib.getSlot(slots.longString).asString();
         string memory expected = longString;
 
         assertEq(result, expected);
     }
 
     function test_AsBytes_LessThen32Bytes() public view {
-        bytes memory result = StorageLib.getSlot(s.shortString).asBytes();
+        bytes memory result = StorageLib.getSlot(slots.shortString).asBytes();
         bytes memory expected = bytes(shortString);
 
         assertEq(result, expected);
     }
 
     function test_AsBytes_BiggerThen31Bytes() public view {
-        bytes memory result = StorageLib.getSlot(s.longString).asBytes();
+        bytes memory result = StorageLib.getSlot(slots.longString).asBytes();
         bytes memory expected = bytes(longString);
 
         assertEq(result, expected);
@@ -101,8 +94,9 @@ contract SlotLibTest is Variables, Test {
 
     function test_TLoad_AddressSlot() public {
         bytes32 addressSlot = bytes32("addressSlot");
-        SlotLib.AddressSlot slot = SlotLib.asAddressSlot(addressSlot);
         address expected = address(1);
+
+        SlotLib.AddressSlot slot = SlotLib.asAddressSlot(addressSlot);
 
         SlotLib.tstore(slot, expected);
 
@@ -135,8 +129,9 @@ contract SlotLibTest is Variables, Test {
 
     function test_TLoad_BooleanSlot() public {
         bytes32 booleanSlot = bytes32("booleanSlot");
-        SlotLib.BooleanSlot slot = SlotLib.asBooleanSlot(booleanSlot);
         bool expected = true;
+
+        SlotLib.BooleanSlot slot = SlotLib.asBooleanSlot(booleanSlot);
 
         SlotLib.tstore(slot, expected);
 
@@ -169,8 +164,9 @@ contract SlotLibTest is Variables, Test {
 
     function test_TLoad_Bytes32Slot() public {
         bytes32 bytes32Slot = bytes32("bytes32Slot");
-        SlotLib.Bytes32Slot slot = SlotLib.asBytes32Slot(bytes32Slot);
         bytes32 expected = "test";
+
+        SlotLib.Bytes32Slot slot = SlotLib.asBytes32Slot(bytes32Slot);
 
         SlotLib.tstore(slot, expected);
 
@@ -203,8 +199,9 @@ contract SlotLibTest is Variables, Test {
 
     function test_TLoad_Int256Slot() public {
         bytes32 int256Slot = bytes32("int256Slot");
-        SlotLib.Int256Slot slot = SlotLib.asInt256Slot(int256Slot);
         int256 expected = -32;
+
+        SlotLib.Int256Slot slot = SlotLib.asInt256Slot(int256Slot);
 
         SlotLib.tstore(slot, expected);
 
@@ -237,8 +234,9 @@ contract SlotLibTest is Variables, Test {
 
     function test_TLoad_Uint256Slot() public {
         bytes32 uint256Slot = bytes32("uint256Slot");
-        SlotLib.Uint256Slot slot = SlotLib.asUint256Slot(uint256Slot);
         uint256 expected = 32;
+
+        SlotLib.Uint256Slot slot = SlotLib.asUint256Slot(uint256Slot);
 
         SlotLib.tstore(slot, expected);
 
