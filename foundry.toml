@@ -1,7 +1,5 @@
 [dependencies]
- "@openzeppelin-contracts" = { version = "5.0.2" }
  forge-std = { version = "1.9.1" }
- solady = { version = "0.0.221" }
 
 [profile.default]
  auto_detect_solc = false
