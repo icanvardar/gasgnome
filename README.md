@@ -29,7 +29,7 @@ Gasgnome is a collection of Solidity libraries in inline assembly. The libraries
 #### Example Usage
 
 ```solidity
-import {ArithmeticLib} from "gasgnome";
+import { ArithmeticLib } from "gasgnome";
 
 contract Example {
     using ArithmeticLib for *;
@@ -74,7 +74,7 @@ contract Example {
 #### Example Usage
 
 ```solidity
-import { Contract, ContractLib } from "gnome";
+import { Contract, ContractLib } from "gasgnome";
 
 contract Example {
     function exampleFunction(Contract c) public {
