@@ -13,8 +13,8 @@ library ErrorLib {
             let len := mload(args)
             mstore(eas, len)
 
-            for { let i := 0 } lt(i, len) { i := add(i, 1) } {
-                let multiplier := mul(add(i, 1), 0x20)
+            for { let i := 0x00 } lt(i, len) { i := add(i, 0x01) } {
+                let multiplier := mul(add(i, 0x01), 0x20)
                 let arg := mload(add(args, multiplier))
                 mstore(add(eas, multiplier), arg)
             }
@@ -26,7 +26,7 @@ library ErrorLib {
             let dataPtr := add(ctx, 0x20)
             let dataLength := mload(ctx)
             let hash := keccak256(dataPtr, dataLength)
-            es := shl(224, shr(224, hash))
+            es := shl(0xe0, shr(0xe0, hash))
         }
     }
 
@@ -39,7 +39,7 @@ library ErrorLib {
     function revertError(ErrorSelector es) internal pure {
         assembly {
             let freePtr := mload(0x40)
-            mstore(freePtr, shr(224, es))
+            mstore(freePtr, shr(0xe0, es))
             revert(add(0x1c, freePtr), 0x04)
         }
     }
@@ -53,13 +53,13 @@ library ErrorLib {
             /// NOTE: Even the error selector's underlying type is bytes4,
             /// in inline assembly it is converted to bytes32 and right padded,
             /// so that right shift is needed to copy the selector!
-            mstore(selectorPtr, shr(224, es))
+            mstore(selectorPtr, shr(0xe0, es))
             freePtr := add(freePtr, 0x20)
 
             let len := mload(eas)
             let initPtr := add(eas, 0x20)
 
-            for { let i := 0 } lt(i, len) { i := add(i, 1) } {
+            for { let i := 0x00 } lt(i, len) { i := add(i, 0x01) } {
                 let arg := mload(add(initPtr, mul(i, 0x20)))
                 mstore(add(freePtr, mul(i, 0x20)), arg)
             }

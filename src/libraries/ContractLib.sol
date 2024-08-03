@@ -16,7 +16,7 @@ library ContractLib {
     /// @dev send ether to contract
     function call(Contract c, uint256 amount) public {
         assembly {
-            let success := call(gas(), c, amount, 0x0, 0x0, 0x0, 0x0)
+            let success := call(gas(), c, amount, 0x00, 0x00, 0x00, 0x00)
 
             if iszero(success) {
                 /// @dev bytes4(keccak256("UnableToCall()")) => 0x09108f6e
@@ -50,10 +50,10 @@ library ContractLib {
                 revert(0x9c, 0x04)
             }
 
-            if eq(hasOutput, 0x1) {
+            if eq(hasOutput, 0x01) {
                 let size := returndatasize()
                 mstore(ptr, size)
-                returndatacopy(add(ptr, 0x20), 0x0, size)
+                returndatacopy(add(ptr, 0x20), 0x00, size)
                 mstore(0x40, add(ptr, add(size, 0x20)))
 
                 output := ptr
@@ -81,7 +81,7 @@ library ContractLib {
             let outPtr := add(output, 0x20)
 
             let i
-            for { i := 0 } lt(i, inputLen) { i := add(i, 0x1) } {
+            for { i := 0x00 } lt(i, inputLen) { i := add(i, 0x01) } {
                 let multiplier := mul(i, 0x20)
                 mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
             }
@@ -94,10 +94,10 @@ library ContractLib {
                 revert(0x9c, 0x04)
             }
 
-            if eq(hasOutput, 0x1) {
+            if eq(hasOutput, 0x01) {
                 let size := returndatasize()
                 mstore(ptr, size)
-                returndatacopy(add(ptr, 0x20), 0x0, size)
+                returndatacopy(add(ptr, 0x20), 0x00, size)
                 mstore(0x40, add(ptr, add(size, 0x20)))
 
                 output := ptr
@@ -107,7 +107,7 @@ library ContractLib {
 
     /// @dev call function + get return value (optional)
     function call(Contract c, FunctionSignature sig, bool hasOutput) internal returns (bytes memory output) {
-        output = call(c, 0x0, sig, hasOutput);
+        output = call(c, 0x00, sig, hasOutput);
     }
 
     /// @dev call function + get return value (optional) + with input
@@ -120,7 +120,7 @@ library ContractLib {
         internal
         returns (bytes memory output)
     {
-        output = call(c, 0x0, sig, input, hasOutput);
+        output = call(c, 0x00, sig, input, hasOutput);
     }
 
     /// staticcall function + get return value
@@ -139,7 +139,7 @@ library ContractLib {
 
             let size := returndatasize()
             mstore(ptr, size)
-            returndatacopy(add(ptr, 0x20), 0x0, size)
+            returndatacopy(add(ptr, 0x20), 0x00, size)
             mstore(0x40, add(ptr, add(size, 0x20)))
 
             result := ptr
@@ -163,7 +163,7 @@ library ContractLib {
             let nextPtr := add(ptr, 0x04)
 
             let i
-            for { i := 0 } lt(i, inputLen) { i := add(i, 0x1) } {
+            for { i := 0x00 } lt(i, inputLen) { i := add(i, 0x01) } {
                 let multiplier := mul(i, 0x20)
                 mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
             }
@@ -178,7 +178,7 @@ library ContractLib {
 
             let size := returndatasize()
             mstore(ptr, size)
-            returndatacopy(add(ptr, 0x20), 0x0, size)
+            returndatacopy(add(ptr, 0x20), 0x00, size)
             mstore(0x40, add(ptr, add(size, 0x20)))
 
             result := ptr
@@ -199,10 +199,10 @@ library ContractLib {
                 revert(0x9c, 0x04)
             }
 
-            if eq(hasOutput, 0x1) {
+            if eq(hasOutput, 0x01) {
                 let size := returndatasize()
                 mstore(ptr, size)
-                returndatacopy(add(ptr, 0x20), 0x0, size)
+                returndatacopy(add(ptr, 0x20), 0x00, size)
                 mstore(0x40, add(ptr, add(size, 0x20)))
 
                 result := ptr
@@ -227,7 +227,7 @@ library ContractLib {
             let nextPtr := add(ptr, 0x04)
 
             let i
-            for { i := 0 } lt(i, inputLen) { i := add(i, 0x1) } {
+            for { i := 0x00 } lt(i, inputLen) { i := add(i, 0x01) } {
                 let multiplier := mul(i, 0x20)
                 mstore(add(nextPtr, multiplier), mload(add(input, add(multiplier, 0x20))))
             }
@@ -240,10 +240,10 @@ library ContractLib {
                 revert(0x9c, 0x04)
             }
 
-            if eq(hasOutput, 0x1) {
+            if eq(hasOutput, 0x01) {
                 let size := returndatasize()
                 mstore(ptr, size)
-                returndatacopy(add(ptr, 0x20), 0x0, size)
+                returndatacopy(add(ptr, 0x20), 0x00, size)
                 mstore(0x40, add(ptr, add(size, 0x20)))
 
                 result := ptr
@@ -262,7 +262,7 @@ library ContractLib {
 
         assembly {
             switch isCont
-            case 0x0 {
+            case 0x00 {
                 mstore(0x80, 0x6f7c43f1)
                 revert(0x9c, 0x04)
             }
@@ -274,8 +274,8 @@ library ContractLib {
         assembly {
             let size := extcodesize(addr)
             switch size
-            case 0x0 { result := 0x0 }
-            default { result := 0x1 }
+            case 0x00 { result := 0x00 }
+            default { result := 0x01 }
         }
     }
 }

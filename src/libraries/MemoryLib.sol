@@ -41,14 +41,14 @@ library MemoryLib {
 
         bytes32 msp = memoryStorageLocation(freePtr);
         assembly {
-            if eq(isImmutable, 0x1) { mstore(msp, 0x1) }
+            if eq(isImmutable, 0x01) { mstore(msp, 0x01) }
         }
     }
 
     function update(bytes32 ptr, bytes32 data) internal pure {
         bytes32 msp = memoryStorageLocation(ptr);
         assembly {
-            if eq(mload(msp), 0x1) {
+            if eq(mload(msp), 0x01) {
                 /// @dev bytes4(keccak256("ImmutableVariable()")) => 0x8e751c05
                 mstore(0x80, 0x8e751c05)
                 revert(0x9c, 0x04)
