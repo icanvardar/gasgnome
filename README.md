@@ -2,7 +2,7 @@
   <img src="logo.svg" alt="gasgnome" height="196" />
   <h1>Gasgnome</h1>
   <a href="https://soldeer.xyz/project/gasgnome">
-    <img src="https://img.shields.io/badge/soldeer-v0.3.0-blue">
+    <img src="https://img.shields.io/badge/soldeer-0.3.0-blue">
   </a>
   <a href="https://github.com/icanvardar/gasgnome/actions/workflows/ci.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/icanvardar/gasgnome/ci.yml?branch=main&label=build">
@@ -22,7 +22,7 @@ Gasgnome is a collection of Solidity libraries in inline assembly. The libraries
 To install Gasgnome, use the following command:
 
 ```bash
-forge soldeer install gasgnome~v0.3.0
+forge soldeer install gasgnome~0.3.0
 ```
 
 To use these libraries in your project, import the required library file into your Solidity contract.
