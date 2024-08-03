@@ -1,6 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.26;
 
+///  ██████   █████  ███████  ██████  ███    ██  ██████  ███    ███ ███████
+/// ██       ██   ██ ██      ██       ████   ██ ██    ██ ████  ████ ██
+/// ██   ███ ███████ ███████ ██   ███ ██ ██  ██ ██    ██ ██ ████ ██ █████
+/// ██    ██ ██   ██      ██ ██    ██ ██  ██ ██ ██    ██ ██  ██  ██ ██
+///  ██████  ██   ██ ███████  ██████  ██   ████  ██████  ██      ██ ███████
+
 /// @notice Libraries
 import "./libraries/ArithmeticLib.sol";
 import "./libraries/BitmaskLib.sol";
