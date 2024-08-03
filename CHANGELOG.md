@@ -21,6 +21,13 @@ All notable changes to this project will be documented in this file.
 - *(ContractLib)* Merge call functions
 - Add mock contract
 - *(ContractLib.t.sol)* Implement mock contract
+- Add Base.t.sol contact to test files
+- Update types
+- Update library files
+
+### 📚 Documentation
+
+- Add API references
 
 ### 🧪 Testing
 
@@ -32,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - Create Variables.sol mock contract
 - *(SlotLib)* Import Variables mock contract
 - *(SlotLib)* Add transient storage test cases
+- *(Base)* Add base contract for test suites
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -40,6 +48,11 @@ All notable changes to this project will be documented in this file.
 - *(ContractLibProxy)* Add delegatecall with wrong function signature
 - Update CHANGELOG.md
 - Update foundry.toml
+- Update CHANGELOG.md
+- Update README.md
+- Update Gasgnome.sol
+- Update foundry.toml
+- Add soldeer package url
 
 ## [0.2.0] - 2024-08-01
 
