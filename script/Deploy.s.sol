@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.26 <0.9.0;
 
-import { Broadcaster } from "./Broadcaster.s.sol";
-import { Environment } from "./Environment.s.sol";
-import { console2 } from "forge-std/console2.sol";
-
-import { WETH } from "@solady/tokens/WETH.sol";
+import {Broadcaster} from "./Broadcaster.s.sol";
+import {Environment} from "./Environment.s.sol";
 
 contract Deploy is Broadcaster, Environment {
     /// @dev Deploys the Foo contract and optionally deploys a mock WETH contract in Test mode
@@ -15,10 +12,7 @@ contract Deploy is Broadcaster, Environment {
 
         result.foo = address(1);
 
-        if (mode == DeploymentMode.Test) {
-            address mockWeth = address(new WETH());
-            addMock(mockWeth);
-        }
+        if (mode == DeploymentMode.Test) {}
 
         return result;
     }
