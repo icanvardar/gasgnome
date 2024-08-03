@@ -14,76 +14,76 @@ using {
     expSignedInt as ^
 } for SignedInt global;
 
-function addSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function addSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
-        res := add(left, right)
+        result := add(left, right)
     }
 }
 
-function subSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function subSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
-        res := sub(left, right)
+        result := sub(left, right)
     }
 }
 
-function mulSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function mulSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 1 { res := 0 }
-        default { res := mul(left, right) }
+        case 0x01 { result := 0x00 }
+        default { result := mul(left, right) }
     }
 }
 
-function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function divSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
-        if eq(right, 0) {
+        if eq(right, 0x00) {
             /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
             mstore(0x80, 0x23d359a3)
             revert(0x9c, 0x04)
         }
 
-        let l := slt(left, 0)
-        let r := slt(right, 0)
+        let l := slt(left, 0x00)
+        let r := slt(right, 0x00)
         let sign := xor(l, r)
 
-        if l { left := sub(0, left) }
-        if r { right := sub(0, right) }
+        if l { left := sub(0x00, left) }
+        if r { right := sub(0x00, right) }
 
-        res := div(left, right)
+        result := div(left, right)
 
-        if sign { res := sub(0, res) }
+        if sign { result := sub(0x00, result) }
     }
 }
 
-function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function modSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
-        if eq(right, 0) {
+        if eq(right, 0x00) {
             /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
             mstore(0x80, 0x23d359a3)
             revert(0x9c, 0x04)
         }
 
-        let l := slt(left, 0)
-        if l { left := sub(0, left) }
-        if slt(right, 0) { right := sub(0, right) }
+        let l := slt(left, 0x00)
+        if l { left := sub(0x00, left) }
+        if slt(right, 0x00) { right := sub(0x00, right) }
 
-        res := mod(left, right)
+        result := mod(left, right)
 
-        if l { res := sub(0, res) }
+        if l { result := sub(0x00, result) }
     }
 }
 
-function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt res) {
+function expSignedInt(SignedInt left, SignedInt right) pure returns (SignedInt result) {
     assembly {
-        if slt(right, 0) {
+        if slt(right, 0x00) {
             /// bytes4(keccak256("NegativeExponent()"))
             mstore(0x80, 0xe782e44b)
             revert(0x9c, 0x04)
         }
 
-        res := exp(left, right)
+        result := exp(left, right)
 
-        if slt(left, 0) { res := sub(0, res) }
+        if slt(left, 0x00) { result := sub(0x00, result) }
     }
 }
 
@@ -101,28 +101,28 @@ library SignedIntLib {
     function sizeInBits(SignedInt s) public pure returns (uint16 size) {
         assembly {
             let tmp
-            let isNegative := sgt(0, s)
+            let isNegative := sgt(0x00, s)
             let absValue := s
-            if isNegative { absValue := sub(0, s) }
+            if isNegative { absValue := sub(0x00, s) }
 
-            for { let i := 0x1f } gt(i, 0x0) { i := sub(i, 1) } {
+            for { let i := 0x1f } gt(i, 0x00) { i := sub(i, 1) } {
                 let b := byte(i, absValue)
 
                 /// Check existency of first nibble
                 let x := and(b, 0x0f)
-                if gt(x, 0) {
-                    size := add(size, add(tmp, 0x1))
-                    tmp := 0x0
+                if gt(x, 0x00) {
+                    size := add(size, add(tmp, 0x01))
+                    tmp := 0x00
                 }
-                if eq(x, 0) { tmp := add(tmp, 0x1) }
+                if eq(x, 0x00) { tmp := add(tmp, 0x01) }
 
                 /// Check existency of second nibble
                 let y := and(b, 0xf0)
-                if gt(y, 0) { size := add(size, 0x1) }
-                if eq(y, 0) { tmp := add(tmp, 0x1) }
+                if gt(y, 0x00) { size := add(size, 0x01) }
+                if eq(y, 0x00) { tmp := add(tmp, 0x01) }
             }
 
-            size := mul(size, 0x4)
+            size := mul(size, 0x04)
         }
     }
 }

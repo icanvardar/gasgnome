@@ -12,14 +12,14 @@ using BitmaskLib for Mask global;
 library BitmaskLib {
     function build(uint8 bits) public pure returns (Mask memory mask) {
         assembly {
-            mstore(mask, not(sub(shl(bits, 1), 1)))
+            mstore(mask, not(sub(shl(bits, 0x01), 0x01)))
             mstore(add(mask, 0x20), bits)
         }
     }
 
     function build(uint8 bits, uint8 leftShiftedBits) public pure returns (Mask memory mask) {
         assembly {
-            mstore(mask, not(shl(leftShiftedBits, sub(shl(bits, 1), 1))))
+            mstore(mask, not(shl(leftShiftedBits, sub(shl(bits, 0x01), 0x01))))
             mstore(add(mask, 0x20), bits)
             mstore(add(mask, 0x40), leftShiftedBits)
         }

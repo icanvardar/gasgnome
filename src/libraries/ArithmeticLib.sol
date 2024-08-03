@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 library ArithmeticLib {
     function convertWithSize(bytes32 b, uint16 desiredBits, uint16 sizeInBits) public pure returns (bytes32 to) {
         assembly {
-            if eq(desiredBits, 0) {
+            if eq(desiredBits, 0x00) {
                 /// @dev bytes4(keccak256("CannotBeZero(uint256)")) => 0xfef3c17b
                 mstore(0x80, 0xfef3c17b)
                 mstore(0xa0, desiredBits)
@@ -18,7 +18,7 @@ library ArithmeticLib {
                 revert(0x9c, 0x24)
             }
 
-            if gt(mod(desiredBits, 0x8), 0) {
+            if gt(mod(desiredBits, 0x08), 0x00) {
                 /// @dev bytes4(keccak256("MustBeAMultipleOfEight(uint256)")) => 0x36780089
                 mstore(0x80, 0x36780089)
                 mstore(0xa0, desiredBits)
@@ -44,7 +44,7 @@ library ArithmeticLib {
     /// NOTE: finds the nearest bit cap in multiple of eight
     function cap(uint16 bitSize) public pure returns (uint16 res) {
         assembly {
-            if eq(bitSize, 0) {
+            if eq(bitSize, 0x00) {
                 /// @dev bytes4(keccak256("CannotBeZero(uint256)")) => 0xfef3c17b
                 mstore(0x80, 0xfef3c17b)
                 mstore(0xa0, bitSize)
@@ -58,8 +58,8 @@ library ArithmeticLib {
                 revert(0x9c, 0x24)
             }
 
-            for { let i := 0x0 } lt(i, 0x21) { i := add(i, 1) } {
-                let tmp := mul(add(i, 1), 8)
+            for { let i := 0x00 } lt(i, 0x21) { i := add(i, 0x01) } {
+                let tmp := mul(add(i, 0x01), 0x08)
                 if or(gt(tmp, bitSize), eq(tmp, bitSize)) {
                     res := tmp
                     break
