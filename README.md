@@ -17,6 +17,16 @@
 
 Gasgnome is a collection of Solidity libraries in inline assembly. The libraries provided aim to enhance functionality and efficiency in areas such as arithmetic operations, bitmask handling, contract interactions, error handling, event logging, and memory management.
 
+## Installation
+
+To install Gasgnome, use the following command:
+
+```bash
+forge soldeer install gasgnome~v0.3.0
+```
+
+To use these libraries in your project, import the required library file into your Solidity contract.
+
 ## Libraries
 
 ### ArithmeticLib
@@ -277,10 +287,6 @@ contract Example {
     }
 }
 ```
-
-## Installation
-
-To use these libraries in your project, import the required library file into your Solidity contract.
 
 ## Contributing
 
