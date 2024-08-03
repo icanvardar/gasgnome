@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - *(ContractLibLogic)* Update wrong slots
 - *(ContractLib)* Update staticcall to delegatecall
 - *(Slot)* Update wrong parameter type
+- Update Deploy.s.sol
 
 ### 🚜 Refactor
 
@@ -28,6 +29,10 @@ All notable changes to this project will be documented in this file.
 ### 📚 Documentation
 
 - Add API references
+
+### 🎨 Styling
+
+- Update Deploy.s.sol
 
 ### 🧪 Testing
 
@@ -53,6 +58,8 @@ All notable changes to this project will be documented in this file.
 - Update Gasgnome.sol
 - Update foundry.toml
 - Add soldeer package url
+- Update CHANGELOG.md
+- Update remappings.txt
 
 ## [0.2.0] - 2024-08-01
 
