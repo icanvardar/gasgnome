@@ -38,7 +38,7 @@ library PointerLib {
         Pointer msp = memoryStorageLocation(ptr);
 
         assembly {
-            if eq(isImmutable, 0x1) { mstore(msp, 0x1) }
+            if eq(isImmutable, 0x01) { mstore(msp, 0x01) }
         }
     }
 

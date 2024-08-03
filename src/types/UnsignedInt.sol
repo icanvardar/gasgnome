@@ -41,14 +41,14 @@ function subUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (Unsig
 function mulUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
         switch or(iszero(left), iszero(right))
-        case 1 { res := 0 }
+        case 0x01 { res := 0x00 }
         default { res := mul(left, right) }
     }
 }
 
 function divUnsignedInt(UnsignedInt left, UnsignedInt right) pure returns (UnsignedInt res) {
     assembly {
-        if eq(right, 0) {
+        if eq(right, 0x00) {
             /// @dev bytes4(keccak256("DivisionByZero()")) => 0x23d359a3
             mstore(0x80, 0x23d359a3)
             revert(0x9c, 0x04)
@@ -90,24 +90,24 @@ library UnsignedIntLib {
     function sizeInBits(UnsignedInt u) public pure returns (uint16 size) {
         assembly {
             let tmp
-            for { let i := 0x1f } gt(i, 0x0) { i := sub(i, 1) } {
+            for { let i := 0x1f } gt(i, 0x00) { i := sub(i, 1) } {
                 let b := byte(i, u)
 
                 /// NOTE: check existency of first nibble
                 let x := and(b, 0x0f)
-                if gt(x, 0) {
-                    size := add(size, add(tmp, 0x1))
-                    tmp := 0x0
+                if gt(x, 0x00) {
+                    size := add(size, add(tmp, 0x01))
+                    tmp := 0x00
                 }
-                if eq(x, 0) { tmp := add(tmp, 0x1) }
+                if eq(x, 0x00) { tmp := add(tmp, 0x01) }
 
                 /// NOTE: check existency of second nibble
                 let y := and(b, 0xf0)
-                if gt(y, 0) { size := add(size, 0x1) }
-                if eq(y, 0) { tmp := add(tmp, 0x1) }
+                if gt(y, 0x00) { size := add(size, 0x01) }
+                if eq(y, 0x00) { tmp := add(tmp, 0x01) }
             }
 
-            size := mul(size, 0x4)
+            size := mul(size, 0x04)
         }
     }
 }

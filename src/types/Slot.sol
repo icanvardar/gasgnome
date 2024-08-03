@@ -13,7 +13,7 @@ library SlotLib {
             let data := sload(s.slot)
             let bytesToBeRemoved := sub(0x20, add(s.offset, 0x14))
             let extractedRes := shl(mul(bytesToBeRemoved, 0x08), data)
-            result := shr(mul(0xc, 0x08), extractedRes)
+            result := shr(mul(0x0c, 0x08), extractedRes)
         }
     }
 
@@ -52,24 +52,24 @@ library SlotLib {
             let slot := s.slot
             let value := sload(slot)
             let rawLength := and(value, 0xffff)
-            let length := div(rawLength, 2)
+            let length := div(rawLength, 0x02)
 
-            if lt(length, 32) {
+            if lt(length, 0x20) {
                 result := mload(0x40)
                 mstore(result, length)
                 mstore(add(result, 0x20), value)
-                mstore(0x40, add(result, and(add(add(0x20, length), 31), not(31))))
+                mstore(0x40, add(result, and(add(add(0x20, length), 0x1f), not(0x1f))))
             }
 
-            if iszero(lt(length, 32)) {
+            if iszero(lt(length, 0x20)) {
                 // @dev This calculation is not needed because solidity rounds decimals.
                 // So that, length variable's first assigned value is OK!
                 // length := div(sub(rawLength, 1), 2)
                 result := mload(0x40)
                 mstore(result, length)
 
-                for { let i := 0 } lt(i, length) { i := add(i, 0x20) } {
-                    mstore(add(result, add(0x20, i)), sload(add(keccak256(slot, 0x20), div(i, 32))))
+                for { let i := 0x00 } lt(i, length) { i := add(i, 0x20) } {
+                    mstore(add(result, add(0x20, i)), sload(add(keccak256(slot, 0x20), div(i, 0x20))))
                 }
 
                 mstore(0x40, add(add(result, 0x20), length))
