@@ -22,7 +22,7 @@ Gasgnome is a collection of Solidity libraries in inline assembly. The libraries
 To install Gasgnome, use the following command:
 
 ```bash
-forge soldeer install gasgnome~0.3.0
+forge soldeer install gasgnome
 ```
 
 To use these libraries in your project, import the required library file into your Solidity contract.
@@ -42,8 +42,6 @@ To use these libraries in your project, import the required library file into yo
 import { ArithmeticLib } from "gasgnome";
 
 contract Example {
-    using ArithmeticLib for *;
-
     function exampleFunction(bytes32 value, uint16 desiredBits) public pure returns (bytes32) {
         return ArithmeticLib.convertWithSize(value, desiredBits, 256);
     }
@@ -272,9 +270,7 @@ contract Example {
 - **`modUnsignedInt(UnsignedInt left, UnsignedInt right)`**: Computes the modulus of two unsigned integers.
 - **`expUnsignedInt(UnsignedInt left, UnsignedInt right)`**: Computes the exponentiation of two unsigned integers.
 - **`convertWithSize(UnsignedInt u, uint16 desiredBits)`**: Converts an unsigned integer to a desired bit size.
-- **`sizeInBits(UnsignedInt u
-
-)`**: Computes the bit size of an unsigned integer.
+- **`sizeInBits(UnsignedInt u)`**: Computes the bit size of an unsigned integer.
 
 #### Example Usage
 
